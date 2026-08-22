@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "updatedAt": "2026-08-23T00:00:00.000Z",
+  "stocks": [
+    {
+      "symbol": "NVDA",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "TSLA",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "AAPL",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "MSTR",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "STRC",
+      "price": 0,
+      "change": 0
+    }
+  ],
+  "indices": {
+    "nasdaq": {
+      "symbol": "^IXIC",
+      "price": 0,
+      "change": 0
+    },
+    "sp500": {
+      "symbol": "^GSPC",
+      "price": 0,
+      "change": 0
+    }
+  },
+  "crypto": [
+    {
+      "symbol": "BTC",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "ETH",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "BNB",
+      "price": 0,
+      "change": 0
+    },
+    {
+      "symbol": "OKB",
+      "price": 0,
+      "change": 0
+    }
+  ]
+}
