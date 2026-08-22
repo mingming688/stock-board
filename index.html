@@ -1,18 +1,27 @@
 <!doctype html>
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="utf-8">
 
 <meta name="viewport"
       content="width=device-width,initial-scale=1,
       maximum-scale=1,user-scalable=no">
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-capable"
+      content="yes">
 
-<title>股票行情</title>
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent">
+
+<title>美股行情</title>
 
 <style>
+
+/* =========================
+   基础
+========================= */
 
 *{
     box-sizing:border-box;
@@ -21,12 +30,16 @@
 
 html,
 body{
+
     margin:0;
     padding:0;
+
     width:100%;
     min-height:100%;
+
     background:#050608;
     color:#f5f7fa;
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -39,10 +52,17 @@ body{
     overflow-x:hidden;
 }
 
+/* =========================
+   主容器
+========================= */
+
 #app{
+
     width:100%;
     max-width:1200px;
+
     margin:0 auto;
+
     padding:12px;
 }
 
@@ -51,7 +71,9 @@ body{
 ========================= */
 
 .header{
+
     display:flex;
+
     justify-content:space-between;
     align-items:flex-end;
 
@@ -62,34 +84,48 @@ body{
 }
 
 .title{
+
     font-size:22px;
+
     font-weight:800;
+
     letter-spacing:.2px;
 }
 
 .subtitle{
+
     margin-top:3px;
+
     font-size:10px;
+
     color:#78818c;
 }
 
 .clock{
+
     font-size:12px;
+
     color:#9ca5af;
+
     white-space:nowrap;
 }
 
 /* =========================
-   美股列表
+   股票列表
 ========================= */
 
 .stock-list{
+
     width:100%;
 }
 
 .stock-row{
+
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+
+    grid-template-columns:
+        1fr 1fr 1fr;
+
     align-items:center;
 
     min-height:48px;
@@ -98,73 +134,111 @@ body{
 }
 
 .stock-symbol{
+
     font-size:18px;
+
     font-weight:800;
 }
 
 .stock-price{
+
     text-align:center;
+
     font-size:17px;
+
     font-weight:750;
-    font-variant-numeric:tabular-nums;
+
+    font-variant-numeric:
+        tabular-nums;
 }
 
 .stock-change{
+
     text-align:right;
+
     font-size:15px;
+
     font-weight:750;
-    font-variant-numeric:tabular-nums;
+
+    font-variant-numeric:
+        tabular-nums;
 }
 
+/* =========================
+   涨跌颜色
+========================= */
+
 .up{
+
     color:#19d889;
 }
 
 .down{
+
     color:#ff4d63;
 }
 
 .flat{
+
     color:#9aa3ad;
+}
+
+/* =========================
+   分区标题
+========================= */
+
+.section-title{
+
+    margin-top:10px;
+    margin-bottom:5px;
+
+    font-size:11px;
+
+    color:#89939e;
 }
 
 /* =========================
    指数
 ========================= */
 
-.section-title{
-    margin-top:10px;
-    margin-bottom:5px;
-
-    font-size:11px;
-    color:#89939e;
-}
-
 .index-grid{
+
     display:grid;
-    grid-template-columns:1fr 1fr;
+
+    grid-template-columns:
+        1fr 1fr;
+
     gap:8px;
 }
 
 .index-card{
+
     background:#0c0f13;
+
     border-radius:6px;
+
     padding:7px 9px;
 
     min-height:44px;
 }
 
 .index-name{
+
     font-size:10px;
+
     color:#8d97a2;
 }
 
 .index-value{
+
     margin-top:2px;
+
     font-size:14px;
+
     font-weight:750;
 
-    font-variant-numeric:tabular-nums;
+    font-variant-numeric:
+        tabular-nums;
 }
 
 /* =========================
@@ -172,7 +246,9 @@ body{
 ========================= */
 
 .crypto-grid{
+
     display:grid;
+
     grid-template-columns:
         repeat(4,1fr);
 
@@ -180,51 +256,69 @@ body{
 }
 
 .crypto-card{
+
     background:#0c0f13;
+
     border-radius:6px;
+
     padding:7px 8px;
 
     min-height:55px;
 }
 
 .crypto-symbol{
+
     font-size:12px;
+
     font-weight:800;
 }
 
 .crypto-price{
+
     margin-top:2px;
 
     font-size:13px;
+
     font-weight:750;
 
-    font-variant-numeric:tabular-nums;
+    font-variant-numeric:
+        tabular-nums;
 }
 
 .crypto-change{
+
     margin-top:1px;
 
     font-size:10px;
+
     font-weight:700;
 }
 
+/* =========================
+   底部
+========================= */
+
 .footer{
+
     margin-top:8px;
+
     text-align:center;
 
     font-size:9px;
+
     line-height:1.5;
 
     color:#58616b;
 }
 
 /* =========================
-   手机端
+   手机
 ========================= */
 
 @media(max-width:600px){
 
     #app{
+
         padding:
             9px
             9px
@@ -232,56 +326,71 @@ body{
     }
 
     .title{
+
         font-size:21px;
     }
 
     .clock{
+
         font-size:11px;
     }
 
     .stock-row{
+
         min-height:49px;
     }
 
     .stock-symbol{
+
         font-size:17px;
     }
 
     .stock-price{
+
         font-size:16px;
     }
 
     .stock-change{
+
         font-size:14px;
     }
 
     .index-grid{
+
         gap:6px;
     }
 
     .index-card{
-        padding:6px 8px;
+
+        padding:
+            6px
+            8px;
     }
 
     .index-value{
+
         font-size:13px;
     }
 
     .crypto-grid{
+
         gap:6px;
     }
 
     .crypto-card{
+
         padding:
             7px
             7px;
     }
 
     .crypto-symbol{
+
         font-size:11px;
     }
 
     .crypto-price{
+
         font-size:12px;
     }
 
@@ -294,34 +403,42 @@ body{
 @media(max-width:414px){
 
     #app{
+
         padding:8px;
     }
 
     .header{
+
         padding-bottom:8px;
     }
 
     .title{
+
         font-size:20px;
     }
 
     .stock-row{
+
         min-height:47px;
     }
 
     .stock-symbol{
+
         font-size:17px;
     }
 
     .stock-price{
+
         font-size:16px;
     }
 
     .stock-change{
+
         font-size:14px;
     }
 
     .crypto-grid{
+
         grid-template-columns:
             repeat(2,1fr);
 
@@ -329,41 +446,54 @@ body{
     }
 
     .crypto-card{
+
         min-height:52px;
     }
 
 }
 
 /* =========================
-   非常小屏幕
+   很小屏幕
 ========================= */
 
 @media(max-width:350px){
 
     .stock-symbol{
+
         font-size:16px;
     }
 
     .stock-price{
+
         font-size:15px;
     }
 
     .stock-change{
+
         font-size:13px;
     }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="app">
+
+
+    <!-- =====================
+         顶部
+    ====================== -->
 
     <div class="header">
 
         <div>
+
             <div class="title">
                 美股行情
             </div>
@@ -371,52 +501,116 @@ body{
             <div class="subtitle">
                 iPhone 6 Plus · 自动更新
             </div>
+
         </div>
 
-        <div id="clock" class="clock">
+
+        <div id="clock"
+             class="clock">
+
             --:--:--
+
         </div>
 
     </div>
+
 
 
     <!-- =====================
          美股
     ====================== -->
 
-    <div id="stocks" class="stock-list">
+    <div id="stocks"
+         class="stock-list">
+
 
         <div class="stock-row">
-            <div class="stock-symbol">NVDA</div>
-            <div class="stock-price">--</div>
-            <div class="stock-change">--</div>
+
+            <div class="stock-symbol">
+                NVDA
+            </div>
+
+            <div class="stock-price">
+                --
+            </div>
+
+            <div class="stock-change">
+                --
+            </div>
+
         </div>
 
-        <div class="stock-row">
-            <div class="stock-symbol">TSLA</div>
-            <div class="stock-price">--</div>
-            <div class="stock-change">--</div>
-        </div>
 
         <div class="stock-row">
-            <div class="stock-symbol">AAPL</div>
-            <div class="stock-price">--</div>
-            <div class="stock-change">--</div>
+
+            <div class="stock-symbol">
+                TSLA
+            </div>
+
+            <div class="stock-price">
+                --
+            </div>
+
+            <div class="stock-change">
+                --
+            </div>
+
         </div>
 
-        <div class="stock-row">
-            <div class="stock-symbol">MSTR</div>
-            <div class="stock-price">--</div>
-            <div class="stock-change">--</div>
-        </div>
 
         <div class="stock-row">
-            <div class="stock-symbol">STRC</div>
-            <div class="stock-price">--</div>
-            <div class="stock-change">--</div>
+
+            <div class="stock-symbol">
+                AAPL
+            </div>
+
+            <div class="stock-price">
+                --
+            </div>
+
+            <div class="stock-change">
+                --
+            </div>
+
         </div>
+
+
+        <div class="stock-row">
+
+            <div class="stock-symbol">
+                MSTR
+            </div>
+
+            <div class="stock-price">
+                --
+            </div>
+
+            <div class="stock-change">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="stock-row">
+
+            <div class="stock-symbol">
+                STRC
+            </div>
+
+            <div class="stock-price">
+                --
+            </div>
+
+            <div class="stock-change">
+                --
+            </div>
+
+        </div>
+
 
     </div>
+
 
 
     <!-- =====================
@@ -427,7 +621,9 @@ body{
         MARKET INDEX
     </div>
 
+
     <div class="index-grid">
+
 
         <div class="index-card">
 
@@ -437,10 +633,13 @@ body{
 
             <div id="nasdaq"
                  class="index-value">
+
                 --
+
             </div>
 
         </div>
+
 
 
         <div class="index-card">
@@ -451,12 +650,16 @@ body{
 
             <div id="sp500"
                  class="index-value">
+
                 --
+
             </div>
 
         </div>
 
+
     </div>
+
 
 
     <!-- =====================
@@ -467,35 +670,89 @@ body{
         CRYPTO · 加密货币
     </div>
 
+
     <div id="crypto"
          class="crypto-grid">
 
-        <div class="crypto-card">
-            <div class="crypto-symbol">BTC</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
-        </div>
 
         <div class="crypto-card">
-            <div class="crypto-symbol">ETH</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
+
+            <div class="crypto-symbol">
+                BTC
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
         </div>
 
-        <div class="crypto-card">
-            <div class="crypto-symbol">BNB</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
-        </div>
+
 
         <div class="crypto-card">
-            <div class="crypto-symbol">OKB</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
+
+            <div class="crypto-symbol">
+                ETH
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
         </div>
+
+
+
+        <div class="crypto-card">
+
+            <div class="crypto-symbol">
+                BNB
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
+        </div>
+
+
+
+        <div class="crypto-card">
+
+            <div class="crypto-symbol">
+                OKB
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
+        </div>
+
 
     </div>
 
+
+
+    <!-- =====================
+         底部
+    ====================== -->
 
     <div class="footer">
 
@@ -504,63 +761,89 @@ body{
         </div>
 
         <div>
+
             最后更新：
+
             <span id="updated">
                 --
             </span>
+
         </div>
 
     </div>
 
+
 </div>
+
 
 
 <script>
 
+
+/* =====================================================
+   这里非常重要
+
+   不再使用 Cloudflare Worker。
+
+   直接读取 GitHub Pages 同目录下的 data.json。
+
+   index.html
+   data.json
+
+   两个文件在同一个目录。
+===================================================== */
+
+
 /* =========================
-   Worker API
-========================= */
-
-const API =
-    "https://stock-board-api.1309475064.workers.dev/";
-
-
-/* =========================
-   工具
+   格式化价格
 ========================= */
 
 function formatPrice(value){
 
-    if(value === null ||
-       value === undefined ||
-       isNaN(value)){
+    if(
+        value === null ||
+        value === undefined ||
+        isNaN(value)
+    ){
 
         return "--";
 
     }
 
+
     return Number(value).toLocaleString(
         "en-US",
         {
+
             minimumFractionDigits:2,
+
             maximumFractionDigits:2
+
         }
     );
 
 }
 
 
+/* =========================
+   格式化涨跌幅
+========================= */
+
 function formatPercent(value){
 
-    if(value === null ||
-       value === undefined ||
-       isNaN(value)){
+    if(
+        value === null ||
+        value === undefined ||
+        isNaN(value)
+    ){
 
         return "--";
 
     }
 
-    const n = Number(value);
+
+    var n = Number(value);
+
 
     if(n > 0){
 
@@ -570,6 +853,7 @@ function formatPercent(value){
 
     }
 
+
     if(n < 0){
 
         return "▼ " +
@@ -578,24 +862,31 @@ function formatPercent(value){
 
     }
 
+
     return "— 0.00%";
 
 }
 
 
+/* =========================
+   涨跌颜色
+========================= */
+
 function changeClass(value){
 
-    if(value > 0){
+    if(Number(value) > 0){
 
         return "up";
 
     }
 
-    if(value < 0){
+
+    if(Number(value) < 0){
 
         return "down";
 
     }
+
 
     return "flat";
 
@@ -608,37 +899,56 @@ function changeClass(value){
 
 function updateClock(){
 
-    const now =
+    var now =
         new Date();
 
-    const h =
+
+    var h =
         String(
             now.getHours()
         ).padStart(2,"0");
 
-    const m =
+
+    var m =
         String(
             now.getMinutes()
         ).padStart(2,"0");
 
-    const s =
+
+    var s =
         String(
             now.getSeconds()
         ).padStart(2,"0");
 
-    document.getElementById(
-        "clock"
-    ).textContent =
-        h + ":" + m + ":" + s;
+
+    var clock =
+        document.getElementById(
+            "clock"
+        );
+
+
+    if(clock){
+
+        clock.textContent =
+            h +
+            ":" +
+            m +
+            ":" +
+            s;
+
+    }
 
 }
+
 
 setInterval(
     updateClock,
     1000
 );
 
+
 updateClock();
+
 
 
 /* =========================
@@ -647,15 +957,17 @@ updateClock();
 
 function updateStocks(data){
 
-    const map = {};
+    var map = {};
+
 
     if(
+        data &&
         data.stocks &&
         Array.isArray(data.stocks)
     ){
 
         data.stocks.forEach(
-            item => {
+            function(item){
 
                 map[item.symbol] =
                     item;
@@ -666,63 +978,84 @@ function updateStocks(data){
     }
 
 
-    const rows =
+    var rows =
         document.querySelectorAll(
             ".stock-row"
         );
 
 
-    rows.forEach(row => {
+    rows.forEach(
+        function(row){
 
-        const symbol =
-            row.querySelector(
-                ".stock-symbol"
-            ).textContent.trim();
-
-        const price =
-            row.querySelector(
-                ".stock-price"
-            );
-
-        const change =
-            row.querySelector(
-                ".stock-change"
-            );
+            var symbolElement =
+                row.querySelector(
+                    ".stock-symbol"
+                );
 
 
-        const item =
-            map[symbol];
+            var priceElement =
+                row.querySelector(
+                    ".stock-price"
+                );
 
 
-        if(!item){
+            var changeElement =
+                row.querySelector(
+                    ".stock-change"
+                );
 
-            return;
+
+            if(
+                !symbolElement ||
+                !priceElement ||
+                !changeElement
+            ){
+
+                return;
+
+            }
+
+
+            var symbol =
+                symbolElement.textContent
+                    .trim();
+
+
+            var item =
+                map[symbol];
+
+
+            if(!item){
+
+                return;
+
+            }
+
+
+            priceElement.textContent =
+                "$" +
+                formatPrice(
+                    item.price
+                );
+
+
+            changeElement.textContent =
+                formatPercent(
+                    item.change
+                );
+
+
+            changeElement.className =
+                "stock-change " +
+                changeClass(
+                    item.change
+                );
 
         }
-
-
-        price.textContent =
-            "$" +
-            formatPrice(
-                item.price
-            );
-
-
-        change.textContent =
-            formatPercent(
-                item.change
-            );
-
-
-        change.className =
-            "stock-change " +
-            changeClass(
-                item.change
-            );
-
-    });
+    );
 
 }
+
 
 
 /* =========================
@@ -732,67 +1065,99 @@ function updateStocks(data){
 function updateIndices(data){
 
     if(
-        data.indices &&
-        data.indices.nasdaq
+        !data ||
+        !data.indices
     ){
 
-        const n =
-            data.indices.nasdaq;
-
-        document.getElementById(
-            "nasdaq"
-        ).innerHTML =
-
-            formatPrice(
-                n.price
-            ) +
-
-            " " +
-
-            '<span class="' +
-            changeClass(n.change) +
-            '">' +
-
-            formatPercent(
-                n.change
-            ) +
-
-            "</span>";
+        return;
 
     }
 
 
-    if(
-        data.indices &&
-        data.indices.sp500
-    ){
+    /* NASDAQ */
 
-        const s =
+    if(data.indices.nasdaq){
+
+        var n =
+            data.indices.nasdaq;
+
+
+        var nasdaq =
+            document.getElementById(
+                "nasdaq"
+            );
+
+
+        if(nasdaq){
+
+            nasdaq.innerHTML =
+
+                formatPrice(
+                    n.price
+                ) +
+
+                " " +
+
+                '<span class="' +
+                changeClass(
+                    n.change
+                ) +
+                '">' +
+
+                formatPercent(
+                    n.change
+                ) +
+
+                "</span>";
+
+        }
+
+    }
+
+
+
+    /* S&P 500 */
+
+    if(data.indices.sp500){
+
+        var s =
             data.indices.sp500;
 
-        document.getElementById(
-            "sp500"
-        ).innerHTML =
 
-            formatPrice(
-                s.price
-            ) +
+        var sp500 =
+            document.getElementById(
+                "sp500"
+            );
 
-            " " +
 
-            '<span class="' +
-            changeClass(s.change) +
-            '">' +
+        if(sp500){
 
-            formatPercent(
-                s.change
-            ) +
+            sp500.innerHTML =
 
-            "</span>";
+                formatPrice(
+                    s.price
+                ) +
+
+                " " +
+
+                '<span class="' +
+                changeClass(
+                    s.change
+                ) +
+                '">' +
+
+                formatPercent(
+                    s.change
+                ) +
+
+                "</span>";
+
+        }
 
     }
 
 }
+
 
 
 /* =========================
@@ -802,6 +1167,7 @@ function updateIndices(data){
 function updateCrypto(data){
 
     if(
+        !data ||
         !data.crypto ||
         !Array.isArray(data.crypto)
     ){
@@ -811,10 +1177,11 @@ function updateCrypto(data){
     }
 
 
-    const map = {};
+    var map = {};
+
 
     data.crypto.forEach(
-        item => {
+        function(item){
 
             map[item.symbol] =
                 item;
@@ -823,94 +1190,146 @@ function updateCrypto(data){
     );
 
 
-    const cards =
+    var cards =
         document.querySelectorAll(
             ".crypto-card"
         );
 
 
-    cards.forEach(card => {
+    cards.forEach(
+        function(card){
 
-        const symbol =
-            card.querySelector(
-                ".crypto-symbol"
-            ).textContent.trim();
-
-
-        const item =
-            map[symbol];
+            var symbolElement =
+                card.querySelector(
+                    ".crypto-symbol"
+                );
 
 
-        if(!item){
+            var priceElement =
+                card.querySelector(
+                    ".crypto-price"
+                );
 
-            return;
+
+            var changeElement =
+                card.querySelector(
+                    ".crypto-change"
+                );
+
+
+            if(
+                !symbolElement ||
+                !priceElement ||
+                !changeElement
+            ){
+
+                return;
+
+            }
+
+
+            var symbol =
+                symbolElement.textContent
+                    .trim();
+
+
+            var item =
+                map[symbol];
+
+
+            if(!item){
+
+                return;
+
+            }
+
+
+            priceElement.textContent =
+                "$" +
+                formatPrice(
+                    item.price
+                );
+
+
+            changeElement.textContent =
+                formatPercent(
+                    item.change
+                );
+
+
+            changeElement.className =
+                "crypto-change " +
+                changeClass(
+                    item.change
+                );
 
         }
-
-
-        const price =
-            card.querySelector(
-                ".crypto-price"
-            );
-
-
-        const change =
-            card.querySelector(
-                ".crypto-change"
-            );
-
-
-        price.textContent =
-            "$" +
-            formatPrice(
-                item.price
-            );
-
-
-        change.textContent =
-            formatPercent(
-                item.change
-            );
-
-
-        change.className =
-            "crypto-change " +
-            changeClass(
-                item.change
-            );
-
-    });
+    );
 
 }
 
 
-/* =========================
-   获取行情
-========================= */
+
+/* =====================================================
+   从 GitHub Pages 获取 data.json
+===================================================== */
 
 async function loadData(){
 
     try{
 
-        const response =
+
+        /*
+         * ./data.json
+         *
+         * 意思是：
+         * 和 index.html 在同一个目录。
+         *
+         * 加时间戳是为了避免 iPhone Safari
+         * 使用旧缓存。
+         */
+
+        var url =
+            "./data.json?t=" +
+            Date.now();
+
+
+        var response =
             await fetch(
-                API +
-                "?t=" +
-                Date.now(),
+                url,
                 {
                     cache:"no-store"
                 }
             );
 
 
-        const data =
+        if(!response.ok){
+
+            throw new Error(
+                "data.json 加载失败 HTTP " +
+                response.status
+            );
+
+        }
+
+
+        var data =
             await response.json();
 
 
-        if(!data.success){
+        console.log(
+            "行情数据:",
+            data
+        );
+
+
+        if(
+            !data ||
+            data.success !== true
+        ){
 
             console.error(
-                "API error:",
+                "data.json 数据异常:",
                 data
             );
 
@@ -919,41 +1338,57 @@ async function loadData(){
         }
 
 
+        /* 更新股票 */
+
         updateStocks(
             data
         );
 
+
+        /* 更新指数 */
 
         updateIndices(
             data
         );
 
 
+        /* 更新加密货币 */
+
         updateCrypto(
             data
         );
 
 
+        /* 更新时间 */
+
         if(data.updatedAt){
 
-            const time =
+            var time =
                 new Date(
                     data.updatedAt
                 );
 
 
-            document.getElementById(
-                "updated"
-            ).textContent =
-
-                time.toLocaleTimeString(
-                    "zh-CN",
-                    {
-                        hour12:false
-                    }
+            var updated =
+                document.getElementById(
+                    "updated"
                 );
 
+
+            if(updated){
+
+                updated.textContent =
+                    time.toLocaleTimeString(
+                        "zh-CN",
+                        {
+                            hour12:false
+                        }
+                    );
+
+            }
+
         }
+
 
     }
     catch(error){
@@ -968,23 +1403,28 @@ async function loadData(){
 }
 
 
-/* =========================
-   首次加载
-========================= */
+
+/* =====================================================
+   页面第一次打开
+===================================================== */
 
 loadData();
 
 
-/* =========================
-   每 30 秒刷新
-========================= */
+
+/* =====================================================
+   每 30 秒重新读取一次 data.json
+===================================================== */
 
 setInterval(
     loadData,
     30000
 );
 
+
 </script>
 
+
 </body>
+
 </html>
