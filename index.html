@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>股票钉盘</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#080a0d;color:#f4f6f8;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;overflow:hidden}
+*{box-sizing:border-box}#app{min-height:100vh;padding:12px 14px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid #262b33;padding-bottom:9px;margin-bottom:4px}
+.title{font-size:22px;font-weight:700}.sub{font-size:10px;color:#7f8996;margin-top:3px}
+#clock{text-align:right;font-size:12px;color:#aab2bd;line-height:1.35}
+.row{display:flex;align-items:center;height:49px;border-bottom:1px solid #1c2026}
+.sym{width:22%;font-size:18px;font-weight:700}.pr{width:42%;text-align:right;font-size:18px;font-weight:700}
+.ch{width:36%;text-align:right;font-size:16px;font-weight:700}.up{color:#22c77a}.down{color:#ff5964}.flat{color:#aab2bd}
+.market{display:flex;justify-content:space-between;padding-top:9px;font-size:12px;color:#aab2bd}
+#status{font-size:9px;color:#626b77;text-align:center;margin-top:9px}
+</style></head>
+<body><div id="app">
+<div class="head"><div><div class="title">美股行情</div><div class="sub">iPhone 6 Plus · 自动更新</div></div><div id="clock">--:--:--</div></div>
+<div id="rows"></div><div class="market"><span>NASDAQ <b id="nasdaq" class="flat">--</b></span><span>S&P 500 <b id="sp" class="flat">--</b></span></div>
+<div id="status">正在获取行情…</div></div>
+<script>
+(function(){
+var stocks=[{s:"NVDA",id:"105.NVDA"},{s:"TSLA",id:"105.TSLA"},{s:"AAPL",id:"105.AAPL"},{s:"MSTR",id:"105.MSTR"},{s:"STRC",id:"105.STRC"}];
+var latest={};
+function fmtPrice(v){return isFinite(v)?"$"+Number(v).toFixed(2):"--";}
+function fmtPct(v){if(!isFinite(v))return"--";var n=Number(v);return(n>0?"+":"")+n.toFixed(2)+"%";}
+function pctClass(v){return v>0?"up":(v<0?"down":"flat");}
+function draw(){var h="";for(var i=0;i<stocks.length;i++){var k=stocks[i].s,d=latest[k]||{},v=d.price,p=d.pct;h+='<div class="row"><div class="sym">'+k+'</div><div class="pr">'+fmtPrice(v)+'</div><div class="ch '+pctClass(p)+'">'+(p>0?"▲ ":p<0?"▼ ":"")+fmtPct(p)+'</div></div>';}document.getElementById("rows").innerHTML=h;}
+function receive(name,data){if(!data)return;latest[name]={price:Number(data.f43)/1000,pct:Number(data.f170)/100};draw();}
+function requestStock(item,idx){var sc=document.createElement("script"),cb="__cb_"+idx+"_"+new Date().getTime();window[cb]=function(json){try{receive(item.s,json&&json.data);}finally{try{delete window[cb];}catch(e){window[cb]=null;}if(sc.parentNode)sc.parentNode.removeChild(sc);}};sc.src="https://push2.eastmoney.com/api/qt/stock/get?secid="+encodeURIComponent(item.id)+"&fields=f43,f57,f58,f60,f170&cb="+cb+"&_="+new Date().getTime();document.body.appendChild(sc);}
+function load(){for(var i=0;i<stocks.length;i++)requestStock(stocks[i],i);document.getElementById("status").innerHTML="更新中 · "+new Date().toLocaleTimeString();}
+function clock(){var d=new Date(),h=("0"+d.getHours()).slice(-2),m=("0"+d.getMinutes()).slice(-2),s=("0"+d.getSeconds()).slice(-2);document.getElementById("clock").innerHTML=h+":"+m+":"+s;}
+clock();draw();load();setInterval(clock,1000);setInterval(load,30000);
+})();
+</script></body></html>
