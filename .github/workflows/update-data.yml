@@ -1,0 +1,380 @@
+name: Update Market Data
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update market data
+        env:
+          TZ: Asia/Shanghai
+        run: |
+
+          node <<'EOF'
+
+          const fs = require("fs");
+
+          async function getJSON(url) {
+
+            const response = await fetch(url, {
+              headers: {
+                "User-Agent": "Mozilla/5.0"
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error(
+                `${response.status} ${response.statusText} ${url}`
+              );
+            }
+
+            return await response.json();
+          }
+
+
+          async function yahoo(symbol) {
+
+            const url =
+              "https://query1.finance.yahoo.com/v8/finance/chart/" +
+              encodeURIComponent(symbol) +
+              "?range=1d&interval=1m";
+
+            const data =
+              await getJSON(url);
+
+            const result =
+              data.chart.result[0];
+
+            const meta =
+              result.meta;
+
+            const price =
+              Number(
+                meta.regularMarketPrice
+              );
+
+            const previous =
+              Number(
+                meta.previousClose ||
+                meta.chartPreviousClose
+              );
+
+            const change =
+              previous
+                ? ((price - previous) / previous) * 100
+                : 0;
+
+            return {
+              symbol,
+              price,
+              change
+            };
+          }
+
+
+          async function binance(symbol) {
+
+            const url =
+              "https://api.binance.com/api/v3/ticker/24hr?symbol=" +
+              symbol +
+              "USDT";
+
+            const data =
+              await getJSON(url);
+
+            return {
+              symbol:
+                symbol === "BNB"
+                  ? "BNB"
+                  : symbol,
+
+              price:
+                Number(data.lastPrice),
+
+              change:
+                Number(data.priceChangePercent)
+            };
+          }
+
+
+          async function okxOKB() {
+
+            const url =
+              "https://www.okx.com/api/v5/market/ticker?instId=OKB-USDT";
+
+            const response =
+              await getJSON(url);
+
+            const item =
+              response.data[0];
+
+            const price =
+              Number(item.last);
+
+            const open =
+              Number(item.sodUtc0);
+
+            let change = 0;
+
+            if (open) {
+              change =
+                ((price - open) / open) * 100;
+            }
+
+            return {
+              symbol: "OKB",
+              price,
+              change
+            };
+          }
+
+
+          async function main() {
+
+            console.log(
+              "开始获取行情..."
+            );
+
+
+            const stocks = [];
+
+            const stockSymbols = [
+              "NVDA",
+              "TSLA",
+              "AAPL",
+              "MSTR",
+              "STRC"
+            ];
+
+
+            for (
+              const symbol
+              of stockSymbols
+            ) {
+
+              try {
+
+                const item =
+                  await yahoo(symbol);
+
+                console.log(
+                  symbol,
+                  item
+                );
+
+                stocks.push(item);
+
+              }
+              catch(error) {
+
+                console.error(
+                  "股票失败:",
+                  symbol,
+                  error.message
+                );
+
+                stocks.push({
+                  symbol,
+                  price: 0,
+                  change: 0
+                });
+
+              }
+
+            }
+
+
+            let nasdaq;
+
+            try {
+
+              nasdaq =
+                await yahoo("^IXIC");
+
+            }
+            catch(error) {
+
+              console.error(
+                "NASDAQ失败:",
+                error.message
+              );
+
+              nasdaq = {
+                symbol: "^IXIC",
+                price: 0,
+                change: 0
+              };
+
+            }
+
+
+            let sp500;
+
+            try {
+
+              sp500 =
+                await yahoo("^GSPC");
+
+            }
+            catch(error) {
+
+              console.error(
+                "S&P 500失败:",
+                error.message
+              );
+
+              sp500 = {
+                symbol: "^GSPC",
+                price: 0,
+                change: 0
+              };
+
+            }
+
+
+            const crypto = [];
+
+
+            for (
+              const symbol
+              of ["BTC", "ETH", "BNB"]
+            ) {
+
+              try {
+
+                const item =
+                  await binance(symbol);
+
+                console.log(
+                  symbol,
+                  item
+                );
+
+                crypto.push(item);
+
+              }
+              catch(error) {
+
+                console.error(
+                  "Binance失败:",
+                  symbol,
+                  error.message
+                );
+
+                crypto.push({
+                  symbol,
+                  price: 0,
+                  change: 0
+                });
+
+              }
+
+            }
+
+
+            try {
+
+              const okb =
+                await okxOKB();
+
+              console.log(
+                "OKB",
+                okb
+              );
+
+              crypto.push(okb);
+
+            }
+            catch(error) {
+
+              console.error(
+                "OKB失败:",
+                error.message
+              );
+
+              crypto.push({
+                symbol: "OKB",
+                price: 0,
+                change: 0
+              });
+
+            }
+
+
+            const output = {
+
+              success: true,
+
+              updatedAt:
+                new Date().toISOString(),
+
+              stocks,
+
+              indices: {
+
+                nasdaq,
+
+                sp500
+
+              },
+
+              crypto
+
+            };
+
+
+            fs.writeFileSync(
+              "data.json",
+              JSON.stringify(
+                output,
+                null,
+                2
+              ) + "\n"
+            );
+
+
+            console.log(
+              "行情数据已经写入 data.json"
+            );
+
+          }
+
+
+          main().catch(error => {
+
+            console.error(error);
+
+            process.exit(1);
+
+          });
+
+          EOF
+
+
+      - name: Commit updated data
+        run: |
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data.json
+
+          git diff --cached --quiet || \
+            git commit -m "Update market data"
+
+          git push
