@@ -3,7 +3,6 @@ name: Update Market Data
 on:
   schedule:
     - cron: "*/5 * * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -14,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -22,16 +20,14 @@ jobs:
         env:
           TZ: Asia/Shanghai
         run: |
-
           node <<'EOF'
-
           const fs = require("fs");
 
           async function getJSON(url) {
-
             const response = await fetch(url, {
               headers: {
-                "User-Agent": "Mozilla/5.0"
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
               }
             });
 
@@ -44,38 +40,30 @@ jobs:
             return await response.json();
           }
 
-
+          // =========================
+          // Yahoo Finance
+          // =========================
           async function yahoo(symbol) {
-
             const url =
               "https://query1.finance.yahoo.com/v8/finance/chart/" +
               encodeURIComponent(symbol) +
               "?range=1d&interval=1m";
 
-            const data =
-              await getJSON(url);
+            const data = await getJSON(url);
 
-            const result =
-              data.chart.result[0];
+            const result = data.chart.result[0];
+            const meta = result.meta;
 
-            const meta =
-              result.meta;
+            const price = Number(meta.regularMarketPrice);
 
-            const price =
-              Number(
-                meta.regularMarketPrice
-              );
+            const previous = Number(
+              meta.previousClose ||
+              meta.chartPreviousClose
+            );
 
-            const previous =
-              Number(
-                meta.previousClose ||
-                meta.chartPreviousClose
-              );
-
-            const change =
-              previous
-                ? ((price - previous) / previous) * 100
-                : 0;
+            const change = previous
+              ? ((price - previous) / previous) * 100
+              : 0;
 
             return {
               symbol,
@@ -84,48 +72,57 @@ jobs:
             };
           }
 
-
-          async function binance(symbol) {
-
+          // =========================
+          // CoinGecko Crypto
+          // =========================
+          async function getCrypto() {
             const url =
-              "https://api.binance.com/api/v3/ticker/24hr?symbol=" +
-              symbol +
-              "USDT";
+              "https://api.coingecko.com/api/v3/simple/price" +
+              "?ids=bitcoin,ethereum,binancecoin" +
+              "&vs_currencies=usd" +
+              "&include_24hr_change=true";
 
-            const data =
-              await getJSON(url);
+            const data = await getJSON(url);
 
-            return {
-              symbol:
-                symbol === "BNB"
-                  ? "BNB"
-                  : symbol,
-
-              price:
-                Number(data.lastPrice),
-
-              change:
-                Number(data.priceChangePercent)
-            };
+            return [
+              {
+                symbol: "BTC",
+                price: Number(data.bitcoin.usd),
+                change: Number(data.bitcoin.usd_24h_change || 0)
+              },
+              {
+                symbol: "ETH",
+                price: Number(data.ethereum.usd),
+                change: Number(data.ethereum.usd_24h_change || 0)
+              },
+              {
+                symbol: "BNB",
+                price: Number(data.binancecoin.usd),
+                change: Number(data.binancecoin.usd_24h_change || 0)
+              }
+            ];
           }
 
-
+          // =========================
+          // OKB - OKX
+          // =========================
           async function okxOKB() {
-
             const url =
               "https://www.okx.com/api/v5/market/ticker?instId=OKB-USDT";
 
-            const response =
-              await getJSON(url);
+            const response = await getJSON(url);
 
-            const item =
-              response.data[0];
+            if (
+              !response.data ||
+              !response.data.length
+            ) {
+              throw new Error("OKX returned no data");
+            }
 
-            const price =
-              Number(item.last);
+            const item = response.data[0];
 
-            const open =
-              Number(item.sodUtc0);
+            const price = Number(item.last);
+            const open = Number(item.sodUtc0);
 
             let change = 0;
 
@@ -141,14 +138,16 @@ jobs:
             };
           }
 
-
+          // =========================
+          // Main
+          // =========================
           async function main() {
 
-            console.log(
-              "开始获取行情..."
-            );
+            console.log("开始获取行情...");
 
-
+            // -------------------------
+            // 股票
+            // -------------------------
             const stocks = [];
 
             const stockSymbols = [
@@ -159,26 +158,21 @@ jobs:
               "STRC"
             ];
 
-
-            for (
-              const symbol
-              of stockSymbols
-            ) {
+            for (const symbol of stockSymbols) {
 
               try {
 
-                const item =
-                  await yahoo(symbol);
+                const item = await yahoo(symbol);
 
                 console.log(
+                  "股票成功:",
                   symbol,
                   item
                 );
 
                 stocks.push(item);
 
-              }
-              catch(error) {
+              } catch (error) {
 
                 console.error(
                   "股票失败:",
@@ -191,21 +185,24 @@ jobs:
                   price: 0,
                   change: 0
                 });
-
               }
-
             }
 
-
+            // -------------------------
+            // NASDAQ
+            // -------------------------
             let nasdaq;
 
             try {
 
-              nasdaq =
-                await yahoo("^IXIC");
+              nasdaq = await yahoo("^IXIC");
 
-            }
-            catch(error) {
+              console.log(
+                "NASDAQ:",
+                nasdaq
+              );
+
+            } catch (error) {
 
               console.error(
                 "NASDAQ失败:",
@@ -217,19 +214,23 @@ jobs:
                 price: 0,
                 change: 0
               };
-
             }
 
-
+            // -------------------------
+            // S&P 500
+            // -------------------------
             let sp500;
 
             try {
 
-              sp500 =
-                await yahoo("^GSPC");
+              sp500 = await yahoo("^GSPC");
 
-            }
-            catch(error) {
+              console.log(
+                "S&P 500:",
+                sp500
+              );
+
+            } catch (error) {
 
               console.error(
                 "S&P 500失败:",
@@ -241,79 +242,111 @@ jobs:
                 price: 0,
                 change: 0
               };
-
             }
 
+            // -------------------------
+            // 加密货币
+            // -------------------------
+            let crypto = [];
 
-            const crypto = [];
+            try {
 
+              crypto = await getCrypto();
 
-            for (
-              const symbol
-              of ["BTC", "ETH", "BNB"]
-            ) {
+              console.log(
+                "CoinGecko Crypto:",
+                crypto
+              );
 
+            } catch (error) {
+
+              console.error(
+                "CoinGecko失败:",
+                error.message
+              );
+
+              // 如果 API 暂时失败，
+              // 尝试保留上一次的数据
               try {
 
-                const item =
-                  await binance(symbol);
+                const oldData =
+                  JSON.parse(
+                    fs.readFileSync(
+                      "data.json",
+                      "utf8"
+                    )
+                  );
 
-                console.log(
-                  symbol,
-                  item
-                );
+                crypto =
+                  Array.isArray(oldData.crypto)
+                    ? oldData.crypto.filter(
+                        item =>
+                          ["BTC", "ETH", "BNB"]
+                            .includes(item.symbol)
+                      )
+                    : [];
 
-                crypto.push(item);
+              } catch (e) {
 
+                crypto = [];
               }
-              catch(error) {
-
-                console.error(
-                  "Binance失败:",
-                  symbol,
-                  error.message
-                );
-
-                crypto.push({
-                  symbol,
-                  price: 0,
-                  change: 0
-                });
-
-              }
-
             }
 
-
+            // -------------------------
+            // OKB
+            // -------------------------
             try {
 
               const okb =
                 await okxOKB();
 
               console.log(
-                "OKB",
+                "OKB:",
                 okb
               );
 
               crypto.push(okb);
 
-            }
-            catch(error) {
+            } catch (error) {
 
               console.error(
                 "OKB失败:",
                 error.message
               );
 
-              crypto.push({
-                symbol: "OKB",
-                price: 0,
-                change: 0
-              });
+              // 保留旧 OKB 数据
+              try {
 
+                const oldData =
+                  JSON.parse(
+                    fs.readFileSync(
+                      "data.json",
+                      "utf8"
+                    )
+                  );
+
+                const oldOKB =
+                  Array.isArray(oldData.crypto)
+                    ? oldData.crypto.find(
+                        item =>
+                          item.symbol === "OKB"
+                      )
+                    : null;
+
+                if (oldOKB) {
+                  crypto.push(oldOKB);
+                }
+
+              } catch (e) {
+                console.error(
+                  "读取旧 OKB 数据失败"
+                );
+              }
             }
 
-
+            // -------------------------
+            // 输出
+            // -------------------------
             const output = {
 
               success: true,
@@ -324,17 +357,12 @@ jobs:
               stocks,
 
               indices: {
-
                 nasdaq,
-
                 sp500
-
               },
 
               crypto
-
             };
-
 
             fs.writeFileSync(
               "data.json",
@@ -345,24 +373,38 @@ jobs:
               ) + "\n"
             );
 
+            console.log(
+              "================================"
+            );
 
             console.log(
               "行情数据已经写入 data.json"
             );
 
-          }
+            console.log(
+              JSON.stringify(
+                output,
+                null,
+                2
+              )
+            );
 
+            console.log(
+              "================================"
+            );
+          }
 
           main().catch(error => {
 
-            console.error(error);
+            console.error(
+              "程序运行失败:",
+              error
+            );
 
             process.exit(1);
-
           });
 
           EOF
-
 
       - name: Commit updated data
         run: |
