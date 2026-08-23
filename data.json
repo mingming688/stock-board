@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updatedAt": "2026-08-23T11:43:51.035Z",
+  "updatedAt": "2026-08-23T13:22:34.474Z",
   "stocks": [
     {
       "symbol": "NVDA",
@@ -43,23 +43,23 @@
   "crypto": [
     {
       "symbol": "BTC",
-      "price": 77301,
-      "change": 0.2290311737998199
+      "price": 77587,
+      "change": 0.5854139632262172
     },
     {
       "symbol": "ETH",
-      "price": 2435,
-      "change": 0.49806338656992355
+      "price": 2456.92,
+      "change": 1.3124905690640378
     },
     {
       "symbol": "BNB",
-      "price": 694.79,
-      "change": 0.0399231741998213
+      "price": 697.92,
+      "change": 0.5739133704878066
     },
     {
       "symbol": "OKB",
-      "price": 110.47,
-      "change": 0.24500907441015973
+      "price": 110.62,
+      "change": 0.38112522686025563
     }
   ]
 }
