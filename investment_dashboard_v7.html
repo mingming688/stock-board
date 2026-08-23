@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>My Investment · 投资账本</title>
+<style>
+:root{--bg:#0b1020;--panel:#11182b;--panel2:#172038;--text:#eef3ff;--muted:#91a0bd;--line:#26324d;--green:#39d98a;--red:#ff647c;--blue:#6ea8ff;--gold:#f7c948}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(160deg,#0b1020,#0d1425 55%,#0a1020);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:24px 18px 120px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.brand{font-size:24px;font-weight:800}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+button{border:0;border-radius:12px;padding:10px 14px;background:#263554;color:white;font-weight:700;cursor:pointer}.danger{background:#38202a;color:#ff9aaa}.primary{background:#3b6eea}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card,.panel{background:rgba(17,24,43,.88);border:1px solid var(--line);border-radius:18px}.card{padding:16px}.label{color:var(--muted);font-size:13px}.value{font-size:25px;font-weight:800;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}
+.panel{padding:18px;margin-top:16px}.panel h2{font-size:17px;margin:0 0 14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{background:#18233b;color:#aebbd4}.tab.active{background:#3b6eea;color:#fff}
+.holdings{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.holding{padding:15px;background:#141e34;border:1px solid #25314b;border-radius:16px}.hrow{display:flex;justify-content:space-between;gap:10px}.ticker{font-size:18px;font-weight:800}.name{font-size:12px;color:var(--muted);margin-top:3px}.price{font-size:20px;font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.stat{background:#0f1729;border-radius:11px;padding:9px}.stat b{display:block;margin-top:4px}.bar{position:relative;height:8px;background:#27324b;border-radius:99px;margin-top:16px}.bar .mid{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:var(--blue);border:3px solid #0d1425}.targets{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:7px}
+.chat{position:fixed;left:0;right:0;bottom:0;background:rgba(9,14,27,.96);border-top:1px solid var(--line);padding:12px max(14px,calc((100vw - 1100px)/2 + 14px));backdrop-filter:blur(12px)}.chatbox{display:flex;gap:8px}.chatbox input{flex:1;background:#151f35;border:1px solid #2a3855;color:#fff;border-radius:14px;padding:13px 14px;outline:none}.hint{font-size:11px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid #202c45}th{color:var(--muted);font-weight:600}
+.empty{color:var(--muted);padding:20px 0}.log{font-size:13px;color:#d9e2f5;margin:8px 0;padding:10px 12px;background:#0f1729;border-radius:10px}.log small{color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal.show{display:flex}.modalbox{max-width:520px;width:100%;background:#121a2c;border:1px solid var(--line);border-radius:18px;padding:20px}.modalbox h3{margin-top:0}.modalbox input,.modalbox select{width:100%;margin:7px 0;padding:11px;border-radius:10px;border:1px solid #2b3955;background:#0e1627;color:#fff}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.holdings{grid-template-columns:1fr}.value{font-size:21px}.wrap{padding:18px 12px 120px}}
+@media(max-width:430px){.cards{grid-template-columns:1fr 1fr}.card{padding:12px}.value{font-size:18px}.stats{grid-template-columns:1fr 1fr}.top{align-items:flex-start}.top button{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><div class="brand">MY INVESTMENT</div><div class="sub">你的个人投资账本 · V7</div></div>
+    <div><button onclick="openAdd()">＋ 手动录入</button><button onclick="alert('试试：汇丰 8月23日买入 NVDA 2股，价格215\\n星财富 今天买入TSLA 1000美元，价格360\\n汇丰 NVDA 止损180，目标250')">示例</button></div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="label">总持仓市值</div><div class="value" id="totalValue">$0.00</div></div>
+    <div class="card"><div class="label">总成本</div><div class="value" id="totalCost">$0.00</div></div>
+    <div class="card"><div class="label">浮动盈亏</div><div class="value" id="totalPnL">$0.00</div></div>
+    <div class="card"><div class="label">收益率</div><div class="value" id="totalPct">0.00%</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>账户</h2>
+    <div class="tabs" id="accountTabs"></div>
+  </div>
+
+  <div class="panel" style="padding:12px 18px"><div class="hrow"><span class="label">行情</span><span id="quoteStatus" class="label">准备获取行情…</span></div></div>
+
+  <div class="panel">
+    <h2>持仓</h2>
+    <div class="holdings" id="holdings"></div>
+  </div>
+
+  
+<div class="panel">
+  <div class="hrow">
+    <div><h2 style="margin-bottom:4px">资产变化</h2><div class="label">打开网页时自动记录组合快照</div></div>
+    <div class="tabs" style="margin:0">
+      <button class="tab active" id="range7" onclick="setChartRange(7)">7D</button>
+      <button class="tab" id="range30" onclick="setChartRange(30)">30D</button>
+      <button class="tab" id="rangeAll" onclick="setChartRange(9999)">全部</button>
+    </div>
+  </div>
+  <div style="height:190px;margin-top:12px"><canvas id="equityChart" style="width:100%;height:100%"></canvas></div>
+</div>
+
+<div class="modal" id="journalModal">
+  <div class="modalbox">
+    <h3>新增投资日记</h3>
+    <select id="jAccount"><option>星财富</option><option>汇丰</option></select>
+    <input id="jTicker" placeholder="股票代码，例如 NVDA">
+    <input id="jDate" type="date">
+    <input id="jTitle" placeholder="标题，例如：继续持有 NVDA">
+    <textarea id="jText" placeholder="记录你的投资理由、判断、风险、计划……" style="width:100%;height:130px;margin:7px 0;padding:11px;border-radius:10px;border:1px solid #2b3955;background:#0e1627;color:#fff;resize:vertical"></textarea>
+    <div style="display:flex;gap:8px"><button class="primary" onclick="saveJournal()">保存</button><button onclick="closeJournal()">取消</button></div>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modalbox" style="max-width:650px">
+    <div class="hrow"><div><h3 id="detailTitle" style="margin:0"></h3><div id="detailSub" class="label"></div></div><button onclick="closeDetail()">关闭</button></div>
+    <div id="detailBody" style="margin-top:14px"></div>
+  </div>
+</div>
+
+
+<div class="panel">
+  <div class="hrow">
+    <div>
+      <h2 style="margin-bottom:4px">投资日记</h2>
+      <div class="label">记录“为什么买、为什么卖、当时怎么想”</div>
+    </div>
+    <button onclick="openJournal()">＋ 写日记</button>
+  </div>
+  <div id="journalList" style="margin-top:12px"></div>
+</div>
+
+<div class="panel">
+    <h2>交易流水</h2>
+    <div id="trades"></div>
+  </div>
+</div>
+
+<div class="chat">
+  <div class="chatbox">
+    <input id="chatInput" placeholder='例如：汇丰 8月23日买入NVDA 2股，价格215' onkeydown="if(event.key==='Enter')parseChat()">
+    <button class="primary" onclick="parseChat()">记账</button>
+  </div>
+  <div class="hint">支持自然语言：买入 / 卖出 / 加仓 / 止损 / 目标价 / 投资想法 / 盈亏计算。数据保存在本浏览器。</div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <h3>手动录入交易</h3>
+    <select id="mAccount"><option>星财富</option><option>汇丰</option></select>
+    <input id="mTicker" placeholder="股票代码，例如 NVDA">
+    <select id="mSide"><option value="buy">买入</option><option value="sell">卖出</option></select>
+    <input id="mQty" type="number" step="0.0001" placeholder="数量">
+    <input id="mPrice" type="number" step="0.0001" placeholder="成交价 USD">
+    <input id="mDate" type="date">
+    <div style="display:flex;gap:8px;margin-top:8px"><button class="primary" onclick="saveManual()">保存</button><button onclick="closeAdd()">取消</button></div>
+  </div>
+</div>
+
+<script>
+const SEED = {
+  accounts:["全部","星财富","汇丰"],
+  holdings:[
+    {account:"星财富",ticker:"TSM",name:"台积电",qty:2,avg:288.270,current:418.950},
+    {account:"星财富",ticker:"TSLA",name:"特斯拉",qty:4,avg:382.500,current:362.860},
+    {account:"星财富",ticker:"IBIT",name:"iShares Bitcoin Trust",qty:1,avg:43.400,current:43.680},
+    {account:"汇丰",ticker:"ASTS",name:"AST SpaceMobile",qty:1,avg:112.960,current:68.650},
+    {account:"汇丰",ticker:"INTC",name:"Intel",qty:2,avg:108.923,current:90.070},
+    {account:"汇丰",ticker:"NOK",name:"Nokia",qty:6,avg:13.842,current:10.210},
+    {account:"汇丰",ticker:"NVDA",name:"NVIDIA",qty:5,avg:200.215,current:214.720},
+    {account:"汇丰",ticker:"ORCL",name:"Oracle",qty:4,avg:169.660,current:146.470},
+    {account:"汇丰",ticker:"SPCX",name:"SPACEX",qty:1,avg:215.000,current:136.970},
+    {account:"汇丰",ticker:"STRC",name:"Strategy Inc Variable",qty:1,avg:99.270,current:96.180}
+  ],
+  trades:[],
+  targets:{}
+};
+
+let savedState = null;
+try { savedState = JSON.parse(localStorage.getItem("myInvestmentV2") || "null"); } catch(e) {}
+let state = (savedState && Array.isArray(savedState.holdings) && savedState.holdings.length)
+  ? savedState
+  : structuredClone(SEED);
+state.accounts = Array.isArray(state.accounts) && state.accounts.length ? state.accounts : structuredClone(SEED.accounts);
+state.trades = Array.isArray(state.trades) ? state.trades : [];
+state.targets = state.targets && typeof state.targets === "object" ? state.targets : {};
+state.journals = Array.isArray(state.journals) ? state.journals : [];
+state.snapshots = Array.isArray(state.snapshots) ? state.snapshots : [];
+let quotes = JSON.parse(localStorage.getItem("myInvestmentQuotesV3") || "{}");
+let active="全部";
+state.snapshots=state.snapshots||[];
+let quoteBusy=false;
+let chartRange=7;
+
+const $ = id => document.getElementById(id);
+const money = n => "$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct = n => (n>=0?"+":"")+Number(n||0).toFixed(2)+"%";
+function save(){localStorage.setItem("myInvestmentV2",JSON.stringify(state));}
+function visible(){return state.holdings.filter(h=>active==="全部"||h.account===active);}
+
+function renderTabs(){
+  $("accountTabs").innerHTML=state.accounts.map(a=>
+    `<button class="tab ${a===active?'active':''}" onclick="active='${a}';render()">${a}</button>`
+  ).join("");
+}
+
+
+function yahooSymbol(ticker){
+  // Yahoo Finance symbols used by the quote endpoint.
+  return ticker.toUpperCase();
+}
+async function fetchQuote(ticker){
+  const symbol=encodeURIComponent(ticker.toUpperCase());
+  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1d&interval=1m`;
+  const res=await fetch(url,{cache:"no-store"});
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  const data=await res.json();
+  const meta=data?.chart?.result?.[0]?.meta;
+  const price=Number(meta?.regularMarketPrice);
+  if(!Number.isFinite(price)) throw new Error("没有价格");
+  return {price, currency:meta.currency||"USD", ts:Date.now(), source:"Yahoo"};
+}
+async function fetchRepoQuotes(){
+  const res=await fetch("./data.json?ts="+Date.now(),{cache:"no-store"});
+  if(!res.ok) throw new Error("data.json HTTP "+res.status);
+  const data=await res.json();
+  const list=Array.isArray(data.stocks)?data.stocks:[];
+  const out={};
+  list.forEach(x=>{
+    const p=Number(x.price);
+    if(x.symbol && Number.isFinite(p) && p>0){
+      out[String(x.symbol).toUpperCase()]={price:p,change:Number(x.change||0),ts:Date.now(),source:"stock-board"};
+    }
+  });
+  return {quotes:out,updatedAt:data.updatedAt||null};
+}
+async function refreshQuotes(){
+  if(quoteBusy)return;
+  quoteBusy=true;
+  let repoOk=0, yahooOk=0;
+  let repoUpdated=null;
+  try{
+    const repo=await fetchRepoQuotes();
+    Object.assign(quotes,repo.quotes);
+    repoOk=Object.keys(repo.quotes).length;
+    repoUpdated=repo.updatedAt;
+  }catch(e){ console.warn("repo quote failed",e); }
+
+  // Fallback only for holdings not supplied by data.json.
+  const missing=[...new Set(state.holdings.map(h=>h.ticker).filter(t=>!quotes[t]?.price))];
+  for(const ticker of missing){
+    try{
+      quotes[ticker]=await fetchQuote(ticker);
+      yahooOk++;
+    }catch(e){ console.warn("quote failed",ticker,e); }
+  }
+
+  state.holdings.forEach(h=>{
+    if(quotes[h.ticker]?.price) h.current=quotes[h.ticker].price;
+  });
+  localStorage.setItem("myInvestmentQuotesV3",JSON.stringify(quotes));
+  save();
+
+  const stamp=repoUpdated ? new Date(repoUpdated).toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"}) : "刚刚";
+  $("quoteStatus").textContent=(repoOk||yahooOk)
+    ? `行情已更新 · 主行情 ${repoOk} 个 · 补充 ${yahooOk} 个 · ${stamp}`
+    : "行情暂时无法获取，正在使用上次保存价格";
+
+  takeSnapshot();
+  render();
+  drawChart();
+  quoteBusy=false;
+}
+
+function renderAccountRisk(){
+  const box=$("accountOverview"), risk=$("riskAlerts");
+  if(!box||!risk)return;
+  const accounts=state.accounts.filter(a=>a!=="全部");
+  const cards=[];
+  accounts.forEach(acc=>{
+    const hs=state.holdings.filter(h=>h.account===acc);
+    const value=hs.reduce((s,h)=>s+h.qty*(quotes[h.ticker]?.price??h.current),0);
+    const cost=hs.reduce((s,h)=>s+h.qty*h.avg,0);
+    const pnl=value-cost;
+    cards.push(`<div class="stat"><span class="label">${acc}</span><b>${money(value)}</b><small class="${pnl>=0?'green':'red'}">${money(pnl)} · ${cost?pct(pnl/cost*100):"0.00%"}</small></div>`);
+  });
+  box.innerHTML=cards.join("")||'<div class="empty">暂无账户数据</div>';
+
+  const alerts=[];
+  state.holdings.forEach(h=>{
+    const t=state.targets[h.account+"_"+h.ticker]||{};
+    const live=quotes[h.ticker]?.price??h.current;
+    if(t.stop && live>t.stop){
+      const d=(live-t.stop)/live*100;
+      if(d<=15) alerts.push(`<div class="log">🛑 <b>${h.ticker}</b> 距离止损 ${d.toFixed(1)}% · 当前 ${money(live)} · 止损 ${money(t.stop)}</div>`);
+    }
+    if(t.target && live<t.target){
+      const d=(t.target-live)/live*100;
+      if(d<=15) alerts.push(`<div class="log">🎯 <b>${h.ticker}</b> 距离目标 ${d.toFixed(1)}% · 当前 ${money(live)} · 目标 ${money(t.target)}</div>`);
+    }
+  });
+  risk.innerHTML=alerts.length?'<div class="label" style="margin-bottom:6px">计划位提醒</div>'+alerts.join(""):'<div class="empty">目前没有接近目标位或止损位的持仓。</div>';
+}
+
+function answerPortfolioQuestion(s){
+  const hs=state.holdings||[];
+  const rows=hs.map(h=>{
+    const live=quotes[h.ticker]?.price??h.current, value=h.qty*live, cost=h.qty*h.avg, pnl=value-cost;
+    return {...h,live,value,cost,pnl,ret:cost?pnl/cost*100:0};
+  });
+  const total=rows.reduce((a,x)=>a+x.value,0), cost=rows.reduce((a,x)=>a+x.cost,0), pnl=total-cost;
+  const biggest=rows.slice().sort((a,b)=>b.value-a.value)[0];
+  const winner=rows.slice().sort((a,b)=>b.pnl-a.pnl)[0];
+  const loser=rows.slice().sort((a,b)=>a.pnl-b.pnl)[0];
+
+  const targetMatch=s.match(/([A-Za-z]{2,5}|英伟达|特斯拉|台积电|英特尔|诺基亚|甲骨文|阿斯特|SPACEX|STRC)[^0-9]{0,20}(?:到|涨到|跌到|目标|价格)\s*\$?\s*(\d+(?:\.\d+)?)/i);
+  if(targetMatch){
+    const ticker=normalizeTicker(targetMatch[1]);
+    const target=Number(targetMatch[2]);
+    const r=rows.find(x=>x.ticker===ticker);
+    if(r){
+      const future=(target-r.avg)*r.qty;
+      return `${ticker} 如果到 ${money(target)}，按当前 ${r.qty} 股计算，持仓市值约 ${money(target*r.qty)}，相对成本的浮盈约 ${money(future)}（未计手续费和税费）。`;
+    }
+  }
+  if(/平均成本|均价/.test(s)){
+    const m=s.match(/(?:再买|买入|加仓).{0,12}?(\d+(?:\.\d+)?)\s*(?:股|美元|美金)/i);
+    const ticker=normalizeTicker(s);
+    const r=rows.find(x=>x.ticker===ticker);
+    if(m&&r){
+      const n=Number(m[1]);
+      const priceMatch=s.match(/(?:价格|价|成交价)\s*\$?\s*(\d+(?:\.\d+)?)/i);
+      const price=priceMatch?Number(priceMatch[1]):r.live;
+      const addQty=/美元|美金/.test(m[0])?n/price:n;
+      const avg=(r.qty*r.avg+addQty*price)/(r.qty+addQty);
+      return `如果再买 ${addQty.toFixed(4)} 股 ${ticker} @ ${money(price)}，新的持仓数量约 ${ (r.qty+addQty).toFixed(4)} 股，均价约 ${money(avg)}。`;
+    }
+  }
+  if(/最大仓位|仓位最高/.test(s) && biggest) return `目前最大仓位是 ${biggest.ticker}，市值 ${money(biggest.value)}，占组合约 ${(biggest.value/total*100).toFixed(1)}%。`;
+  if(/最赚钱|最大盈利/.test(s) && winner) return `目前最大盈利来源是 ${winner.ticker}，浮盈 ${money(winner.pnl)}（${pct(winner.ret)}）。`;
+  if(/最大亏损|最亏/.test(s) && loser) return `目前最大亏损是 ${loser.ticker}，浮亏 ${money(loser.pnl)}（${pct(loser.ret)}）。`;
+  if(/总共赚|组合收益|赚了多少|浮盈亏/.test(s)) return `当前组合市值 ${money(total)}，总成本 ${money(cost)}，浮动盈亏 ${money(pnl)}（${cost?pct(pnl/cost*100):"0.00%"}）。`;
+  if(/两个账户|两个帐户|账户|帐户/.test(s) && /多少|市值|资产/.test(s)){
+    const parts=state.accounts.filter(a=>a!=="全部").map(acc=>{
+      const v=rows.filter(x=>x.account===acc).reduce((a,x)=>a+x.value,0); return `${acc} ${money(v)}`;
+    });
+    return parts.join("；")+"。合计 "+money(total)+"。";
+  }
+  return null;
+}
+
+function render(){
+  renderTabs();
+  renderJournal();
+  renderInsights();
+  renderAccountRisk();
+  const hs=visible();
+  let value=0,cost=0;
+  hs.forEach(h=>{const cp=quotes[h.ticker]?.price ?? h.current; value+=h.qty*cp;cost+=h.qty*h.avg});
+  const pnl=value-cost, p=cost?pnl/cost*100:0;
+  $("totalValue").textContent=money(value);
+  $("totalCost").textContent=money(cost);
+  $("totalPnL").textContent=money(pnl);
+  $("totalPnL").className="value "+(pnl>=0?"green":"red");
+  $("totalPct").textContent=pct(p);
+  $("totalPct").className="value "+(p>=0?"green":"red");
+
+  $("holdings").innerHTML=hs.map(h=>{
+    const live=quotes[h.ticker]?.price ?? h.current; const v=h.qty*live,c=h.qty*h.avg,x=v-c,r=c?x/c*100:0;
+    const key=h.account+"_"+h.ticker,t=state.targets[key]||{};
+    const stop=t.stop ?? null,target=t.target ?? null;
+    const lo=stop ?? Math.min(h.avg*.75,live), hi=target ?? Math.max(h.avg*1.25,live);
+    const pos=Math.max(0,Math.min(100,(live-lo)/Math.max(.0001,hi-lo)*100));
+    return `<div class="holding">
+      <div class="hrow">
+        <div><div class="ticker">${h.ticker}</div><div class="name">${h.name} · ${h.account}</div></div>
+        <div class="price">${money(live)} <span class="label" style="font-size:10px">${quotes[h.ticker]?"LIVE":""}</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="label">持仓</span><b>${Number(h.qty).toLocaleString()}</b></div>
+        <div class="stat"><span class="label">均价</span><b>${money(h.avg)}</b></div>
+        <div class="stat"><span class="label">浮盈</span><b class="${x>=0?'green':'red'}">${money(x)}<br>${pct(r)}</b></div>
+      </div>
+      <div class="bar"><div class="mid" style="left:calc(${pos}% - 8px)"></div></div>
+      <div class="targets"><span>🛑 ${stop===null?"未设置":money(stop)}</span><span>🎯 ${target===null?"未设置":money(target)}</span></div>
+    </div>`;
+  }).join("") || '<div class="empty">暂无持仓</div>';
+
+  const logs=state.trades.slice().reverse();
+  $("trades").innerHTML=logs.length?logs.map(t=>
+    `<div class="log"><b>${t.account} · ${t.ticker} · ${t.side==="buy"?"买入":"卖出"}</b>
+    ${Number(t.qty).toLocaleString()}股 @ ${money(t.price)} = ${money(t.qty*t.price)}
+    <br><small>${t.date}${t.note?" · "+t.note:""}</small></div>`
+  ).join(""):'<div class="empty">还没有新的交易记录。直接在底部输入即可。</div>';
+}
+
+function openAdd(){
+  $("mDate").value=new Date().toISOString().slice(0,10);
+  $("modal").classList.add("show");
+}
+function closeAdd(){$("modal").classList.remove("show");}
+
+function addTrade(account,ticker,side,qty,price,date,note=""){
+  if(!account||!ticker||!qty||!price)return false;
+  ticker=ticker.toUpperCase();
+  let h=state.holdings.find(x=>x.account===account&&x.ticker===ticker);
+  if(side==="buy"){
+    if(!h){h={account,ticker,name:ticker,qty:0,avg:0,current:price};state.holdings.push(h);}
+    h.avg=(h.qty*h.avg+qty*price)/(h.qty+qty);
+    h.qty+=qty; h.current=price;
+  }else{
+    if(!h||h.qty<qty)return false;
+    h.qty-=qty; h.current=price;
+    if(h.qty<=0)state.holdings=state.holdings.filter(x=>x!==h);
+  }
+  state.trades.push({account,ticker,side,qty,price,date,note});
+  save();render();return true;
+}
+
+function saveManual(){
+  const ok=addTrade($("mAccount").value,$("mTicker").value.trim().toUpperCase(),$("mSide").value,
+    Number($("mQty").value),Number($("mPrice").value),$("mDate").value);
+  if(!ok) alert("请检查输入，卖出数量不能超过持仓。"); else closeAdd();
+}
+
+function normalizeTicker(s){
+  const map={英伟达:"NVDA",英特尔:"INTC",英特尔公司:"INTC",台积电:"TSM",台积电:"TSM",特斯拉:"TSLA",
+    苹果:"AAPL",甲骨文:"ORCL",诺基亚:"NOK",阿斯特:"ASTS",SPACEX:"SPCX",比特币ETF:"IBIT",STRC:"STRC"};
+  for(const k in map) if(s.includes(k)) return map[k];
+  const tickers=["NVDA","TSLA","TSM","IBIT","ASTS","INTC","NOK","ORCL","SPCX","STRC","AAPL"];
+  const u=s.toUpperCase(); return tickers.find(t=>u.includes(t))||"";
+}
+function parseDate(s){
+  const m=s.match(/(\d{1,2})月(\d{1,2})日/);
+  if(!m)return new Date().toISOString().slice(0,10);
+  return `${new Date().getFullYear()}-${String(m[1]).padStart(2,"0")}-${String(m[2]).padStart(2,"0")}`;
+}
+function nums(s){return [...s.matchAll(/\$?\s*(\d+(?:\.\d+)?)/g)].map(m=>Number(m[1]));}
+
+function parseChat(){
+  const el=$("chatInput"), s=el.value.trim();
+  if(!s)return;
+  const u=s.toUpperCase();
+  const ticker=normalizeTicker(s);
+  const account=s.includes("汇丰")?"汇丰":s.includes("星财富")?"星财富":"";
+  const side=/卖出|卖了|减仓|出售/.test(s)?"sell":/买入|买了|加仓|买/.test(s)?"buy":"";
+
+  // Goal / stop commands
+  if(/止损|目标|目标价|止盈/.test(s)){
+    if(!ticker){alert("没有识别到股票代码。例：汇丰 NVDA 止损180，目标250");return;}
+    const ns=nums(s), value=ns[ns.length-1];
+    if(!value){alert("请告诉我价格，例如：NVDA 止损180");return;}
+    const acc=account||prompt("请指定账户：星财富 / 汇丰");
+    if(!acc)return;
+    const key=acc+"_"+ticker;
+    state.targets[key]=state.targets[key]||{};
+    if(/止损/.test(s))state.targets[key].stop=value;
+    if(/目标|目标价|止盈/.test(s))state.targets[key].target=value;
+    save();render();el.value="";
+    return;
+  }
+
+  if(!side||!ticker){
+    const smart=answerPortfolioQuestion(s);
+    if(smart){ alert(smart); el.value=""; return; }
+
+    if(/最大风险|风险最大|最大仓位|仓位最高|最赚钱|最大盈利|最大亏损|赚了多少|总共赚|组合收益/.test(s)){
+      renderInsights();
+      const hs=state.holdings||[];
+      const rows=hs.map(h=>{const live=quotes[h.ticker]?.price??h.current;const value=h.qty*live,cost=h.qty*h.avg,pnl=value-cost;return {...h,live,value,cost,pnl,ret:cost?pnl/cost*100:0};});
+      const total=rows.reduce((a,x)=>a+x.value,0), cost=rows.reduce((a,x)=>a+x.cost,0), pnl=total-cost;
+      const biggest=rows.slice().sort((a,b)=>b.value-a.value)[0], winner=rows.slice().sort((a,b)=>b.pnl-a.pnl)[0], loser=rows.slice().sort((a,b)=>a.pnl-b.pnl)[0];
+      let ans=`当前组合市值 ${money(total)}，累计浮动盈亏 ${money(pnl)}（${cost?pct(pnl/cost*100):"0.00%"}）。`;
+      if(biggest) ans+=` 最大仓位是 ${biggest.ticker}，占组合约 ${(biggest.value/total*100).toFixed(1)}%。`;
+      if(winner) ans+=` 当前最大盈利来源是 ${winner.ticker}（${money(winner.pnl)}）。`;
+      if(loser) ans+=` 当前最大亏损是 ${loser.ticker}（${money(loser.pnl)}）。`;
+      alert(ans);
+      el.value="";
+      return;
+    }
+    if(/觉得|认为|因为|逻辑|看好|看空|持有|观察|复盘|计划|担心|原因/.test(s)){
+      const acc=account||prompt("这条日记记在哪个账户？请输入：星财富 或 汇丰");
+      if(acc!=="星财富"&&acc!=="汇丰"){alert("账户必须是“星财富”或“汇丰”。");return;}
+      state.journals=state.journals||[];
+      state.journals.push({id:Date.now(),account:acc,ticker,date:parseDate(s),title:ticker+" 投资想法",text:s});
+      save();renderJournal();el.value="";
+      return;
+    }
+    alert("我暂时没识别出完整交易。\n\n试试：\n汇丰 8月23日买入 NVDA 2股，价格215\n星财富 今天买入TSLA 1000美元，价格360\n或者：汇丰 NVDA 我看好AI长期逻辑，继续持有");
+    return;
+  }
+
+  const ns=nums(s);
+  const qm=s.match(/(\d+(?:\.\d+)?)\s*(?:股|shares?)/i);
+  const qty=qm?Number(qm[1]):null;
+  const pm=s.match(/(?:价格|价|成本|成交价|均价|@\s*)\s*\$?\s*(\d+(?:\.\d+)?)/i);
+  let price=pm?Number(pm[1]):null;
+
+  // Amount-style input: “1000美元，价格215”
+  const amountMatch=s.match(/(\d+(?:\.\d+)?)\s*(?:美元|美金|刀|USD|美金)/i);
+  const amount=amountMatch?Number(amountMatch[1]):null;
+
+  // If no explicit price but an amount and current seeded price exists, use current as fallback.
+  if(!price && amount && ticker){
+    const h=state.holdings.find(x=>x.account===(account||"汇丰")&&x.ticker===ticker) ||
+            state.holdings.find(x=>x.ticker===ticker);
+    if(h) price=h.current;
+  }
+  let finalQty=qty;
+  if(!finalQty && amount && price) finalQty=amount/price;
+
+  if(!account){
+    const chosen=prompt("这笔交易记入哪个账户？请输入：星财富 或 汇丰");
+    if(chosen!=="星财富"&&chosen!=="汇丰"){alert("账户必须是“星财富”或“汇丰”。");return;}
+    return parseChatWithAccount(s,chosen);
+  }
+  if(!price && !amount){alert("还缺成交价格。例：汇丰买入NVDA 2股，价格215");return;}
+  if(!finalQty){alert("还缺数量。你也可以直接输入金额，例如：买入NVDA 1000美元，价格215");return;}
+
+  const ok=addTrade(account,ticker,side,finalQty,price,parseDate(s),amount?`按金额 ${money(amount)}`:"");
+  if(!ok)alert("这笔交易无法记账，请检查数量或卖出持仓。");
+  else el.value="";
+}
+
+function parseChatWithAccount(s,account){
+  const ticker=normalizeTicker(s), side=/卖出|卖了|减仓|出售/.test(s)?"sell":"buy";
+  const qm=s.match(/(\d+(?:\.\d+)?)\s*(?:股|shares?)/i);
+  let qty=qm?Number(qm[1]):null;
+  const pm=s.match(/(?:价格|价|成本|成交价|均价|@\s*)\s*\$?\s*(\d+(?:\.\d+)?)/i);
+  let price=pm?Number(pm[1]):null;
+  const am=s.match(/(\d+(?:\.\d+)?)\s*(?:美元|美金|刀|USD|美金)/i);
+  const amount=am?Number(am[1]):null;
+  if(!price&&amount){const h=state.holdings.find(x=>x.account===account&&x.ticker===ticker);if(h)price=h.current;}
+  if(!qty&&amount&&price)qty=amount/price;
+  if(!ticker||!side||!qty||!price){alert("请补充数量和成交价格。");return;}
+  const ok=addTrade(account,ticker,side,qty,price,parseDate(s),amount?`按金额 ${money(amount)}`:"");
+  if(!ok)alert("这笔交易无法记账，请检查卖出数量。"); else $("chatInput").value="";
+}
+
+render();
+window.addEventListener("resize",drawChart);
+refreshQuotes();
+setInterval(refreshQuotes, 60000);
+</script>
+</body>
+</html>
