@@ -3,7 +3,6 @@ name: Update Market Data
 on:
   schedule:
     - cron: "*/5 * * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -15,9 +14,15 @@ jobs:
 
     steps:
 
+      # =========================
+      # 1. 获取仓库
+      # =========================
       - name: Checkout
         uses: actions/checkout@v4
 
+      # =========================
+      # 2. 获取最新行情
+      # =========================
       - name: Update market data
         env:
           TZ: Asia/Shanghai
@@ -27,270 +32,74 @@ jobs:
 
           const fs = require("fs");
 
-
-          // =========================================
-          // 通用 JSON 请求
-          // =========================================
-
           async function getJSON(url) {
 
             const response = await fetch(url, {
               headers: {
-                "User-Agent":
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                "User-Agent": "Mozilla/5.0"
               }
             });
 
             if (!response.ok) {
-
               throw new Error(
                 `${response.status} ${response.statusText}`
               );
-
             }
 
             return await response.json();
-
           }
 
 
-          // =========================================
-          // Yahoo Finance 股票行情
-          // =========================================
+          // =========================
+          // Yahoo Finance
+          // =========================
 
           async function yahoo(symbol) {
 
             const url =
               "https://query1.finance.yahoo.com/v8/finance/chart/" +
               encodeURIComponent(symbol) +
-              "?range=1d" +
-              "&interval=1m" +
-              "&includePrePost=true";
+              "?range=1d&interval=1m";
 
             const data =
               await getJSON(url);
-
-            if (
-              !data.chart ||
-              !data.chart.result ||
-              !data.chart.result[0]
-            ) {
-
-              throw new Error(
-                "Yahoo Finance 没有返回有效数据"
-              );
-
-            }
-
 
             const result =
               data.chart.result[0];
 
             const meta =
-              result.meta || {};
+              result.meta;
 
-            const timestamps =
-              result.timestamp || [];
+            const price =
+              Number(meta.regularMarketPrice);
 
-            const quote =
-              result.indicators &&
-              result.indicators.quote &&
-              result.indicators.quote[0];
-
-
-            if (!quote) {
-
-              throw new Error(
-                "没有找到行情数据"
-              );
-
-            }
-
-
-            const closes =
-              quote.close || [];
-
-
-            // =====================================
-            // 找到最后一个有效的 1 分钟价格
-            // =====================================
-
-            let latestPrice = null;
-            let latestTimestamp = null;
-
-
-            for (
-              let i = closes.length - 1;
-              i >= 0;
-              i--
-            ) {
-
-              if (
-                closes[i] !== null &&
-                closes[i] !== undefined &&
-                Number.isFinite(
-                  Number(closes[i])
-                )
-              ) {
-
-                latestPrice =
-                  Number(closes[i]);
-
-                latestTimestamp =
-                  timestamps[i] || null;
-
-                break;
-
-              }
-
-            }
-
-
-            // =====================================
-            // 如果 1 分钟数据没有价格
-            // 使用 Yahoo 的市场价格
-            // =====================================
-
-            if (
-              latestPrice === null &&
-              meta.regularMarketPrice !== undefined
-            ) {
-
-              latestPrice =
-                Number(
-                  meta.regularMarketPrice
-                );
-
-              latestTimestamp =
-                meta.regularMarketTime || null;
-
-            }
-
-
-            if (
-              latestPrice === null ||
-              !Number.isFinite(latestPrice)
-            ) {
-
-              throw new Error(
-                "无法取得有效价格"
-              );
-
-            }
-
-
-            // =====================================
-            // 前一交易日收盘价
-            // =====================================
-
-            const previousClose =
+            const previous =
               Number(
                 meta.previousClose ||
-                meta.chartPreviousClose ||
-                0
+                meta.chartPreviousClose
               );
-
 
             let change = 0;
 
-
-            if (
-              previousClose &&
-              Number.isFinite(previousClose)
-            ) {
-
+            if (previous) {
               change =
-                (
-                  (latestPrice - previousClose)
-                  /
-                  previousClose
-                ) * 100;
-
+                ((price - previous) / previous) * 100;
             }
-
-
-            // =====================================
-            // 市场状态
-            // =====================================
-
-            let marketState =
-              meta.marketState || "";
-
-
-            let marketStatus =
-              "未知";
-
-
-            if (
-              marketState === "REGULAR"
-            ) {
-
-              marketStatus =
-                "美股交易中";
-
-            }
-            else if (
-              marketState === "PRE"
-            ) {
-
-              marketStatus =
-                "美股盘前";
-
-            }
-            else if (
-              marketState === "POST"
-            ) {
-
-              marketStatus =
-                "美股盘后";
-
-            }
-            else if (
-              marketState === "PREPRE"
-            ) {
-
-              marketStatus =
-                "美股盘前";
-
-            }
-            else {
-
-              marketStatus =
-                "美股休市";
-
-            }
-
 
             return {
-
               symbol,
-
-              price:
-                latestPrice,
-
+              price,
               change,
-
-              previousClose,
-
-              marketState,
-
-              marketStatus,
-
-              priceTime:
-                latestTimestamp
-                  ? new Date(
-                      latestTimestamp * 1000
-                    ).toISOString()
-                  : null
-
+              previousClose: previous,
+              marketState:
+                meta.marketState || ""
             };
-
           }
 
 
-          // =========================================
-          // Binance 加密货币
-          // =========================================
+          // =========================
+          // Binance
+          // =========================
 
           async function binance(symbol) {
 
@@ -299,96 +108,94 @@ jobs:
               symbol +
               "USDT";
 
-
             const data =
               await getJSON(url);
 
-
             return {
-
               symbol,
-
               price:
-                Number(
-                  data.lastPrice
-                ),
-
+                Number(data.lastPrice),
               change:
-                Number(
-                  data.priceChangePercent
-                )
-
+                Number(data.priceChangePercent)
             };
-
           }
 
 
-          // =========================================
-          // OKX OKB
-          // =========================================
+          // =========================
+          // OKX
+          // =========================
 
           async function okxOKB() {
 
             const url =
               "https://www.okx.com/api/v5/market/ticker?instId=OKB-USDT";
 
-
             const response =
               await getJSON(url);
-
 
             const item =
               response.data[0];
 
-
             const price =
-              Number(
-                item.last
-              );
-
+              Number(item.last);
 
             const open =
-              Number(
-                item.sodUtc0
-              );
-
+              Number(item.sodUtc0);
 
             let change = 0;
 
-
             if (open) {
-
               change =
-                (
-                  (price - open)
-                  /
-                  open
-                ) * 100;
-
+                ((price - open) / open) * 100;
             }
 
-
             return {
-
               symbol: "OKB",
-
               price,
-
               change
-
             };
-
           }
 
 
-          // =========================================
+          // =========================
+          // 判断美股市场状态
+          // =========================
+
+          function getMarketStatus(stock) {
+
+            const state =
+              stock.marketState || "";
+
+            if (
+              state === "REGULAR"
+            ) {
+              return "美股交易中";
+            }
+
+            if (
+              state === "PRE"
+            ) {
+              return "美股盘前";
+            }
+
+            if (
+              state === "POST"
+            ) {
+              return "美股盘后";
+            }
+
+            return "美股休市";
+          }
+
+
+          // =========================
           // 主程序
-          // =========================================
+          // =========================
 
           async function main() {
 
             console.log(
-              "================================="
+              "================================"
             );
 
             console.log(
@@ -400,31 +207,26 @@ jobs:
             );
 
             console.log(
-              "================================="
+              "================================"
             );
 
 
-            // =====================================
+            // =========================
             // 股票
-            // =====================================
-
-            const stocks = [];
-
+            // =========================
 
             const stockSymbols = [
-
               "NVDA",
               "TSLA",
               "AAPL",
               "MSTR",
               "STRC"
-
             ];
 
+            const stocks = [];
 
             for (
-              const symbol
-              of stockSymbols
+              const symbol of stockSymbols
             ) {
 
               try {
@@ -432,20 +234,12 @@ jobs:
                 const item =
                   await yahoo(symbol);
 
-
                 console.log(
-                  "股票:",
-                  symbol,
-                  "价格:",
+                  `${symbol}:`,
                   item.price,
-                  "涨跌:",
                   item.change,
-                  "状态:",
-                  item.marketStatus,
-                  "时间:",
-                  item.priceTime
+                  item.marketState
                 );
-
 
                 stocks.push(item);
 
@@ -453,29 +247,17 @@ jobs:
               catch(error) {
 
                 console.error(
-                  "股票失败:",
+                  "股票获取失败:",
                   symbol,
                   error.message
                 );
 
-
                 stocks.push({
-
                   symbol,
-
                   price: 0,
-
                   change: 0,
-
                   previousClose: 0,
-
-                  marketState: "",
-
-                  marketStatus:
-                    "数据获取失败",
-
-                  priceTime: null
-
+                  marketState: ""
                 });
 
               }
@@ -483,12 +265,11 @@ jobs:
             }
 
 
-            // =====================================
+            // =========================
             // NASDAQ
-            // =====================================
+            // =========================
 
             let nasdaq;
-
 
             try {
 
@@ -499,33 +280,24 @@ jobs:
             catch(error) {
 
               console.error(
-                "NASDAQ失败:",
+                "NASDAQ获取失败:",
                 error.message
               );
 
-
               nasdaq = {
-
                 symbol: "^IXIC",
-
                 price: 0,
-
-                change: 0,
-
-                marketStatus:
-                  "数据获取失败"
-
+                change: 0
               };
 
             }
 
 
-            // =====================================
+            // =========================
             // S&P 500
-            // =====================================
+            // =========================
 
             let sp500;
-
 
             try {
 
@@ -536,37 +308,27 @@ jobs:
             catch(error) {
 
               console.error(
-                "S&P 500失败:",
+                "S&P500获取失败:",
                 error.message
               );
 
-
               sp500 = {
-
                 symbol: "^GSPC",
-
                 price: 0,
-
-                change: 0,
-
-                marketStatus:
-                  "数据获取失败"
-
+                change: 0
               };
 
             }
 
 
-            // =====================================
+            // =========================
             // 加密货币
-            // =====================================
+            // =========================
 
             const crypto = [];
 
-
             for (
-              const symbol
-              of [
+              const symbol of [
                 "BTC",
                 "ETH",
                 "BNB"
@@ -578,14 +340,11 @@ jobs:
                 const item =
                   await binance(symbol);
 
-
                 console.log(
-                  "加密货币:",
-                  symbol,
+                  `${symbol}:`,
                   item.price,
                   item.change
                 );
-
 
                 crypto.push(item);
 
@@ -593,20 +352,15 @@ jobs:
               catch(error) {
 
                 console.error(
-                  "Binance失败:",
+                  "Binance获取失败:",
                   symbol,
                   error.message
                 );
 
-
                 crypto.push({
-
                   symbol,
-
                   price: 0,
-
                   change: 0
-
                 });
 
               }
@@ -614,15 +368,14 @@ jobs:
             }
 
 
-            // =====================================
+            // =========================
             // OKB
-            // =====================================
+            // =========================
 
             try {
 
               const okb =
                 await okxOKB();
-
 
               console.log(
                 "OKB:",
@@ -630,89 +383,180 @@ jobs:
                 okb.change
               );
 
-
               crypto.push(okb);
 
             }
             catch(error) {
 
               console.error(
-                "OKB失败:",
+                "OKB获取失败:",
                 error.message
               );
 
-
               crypto.push({
-
                 symbol: "OKB",
-
                 price: 0,
-
                 change: 0
-
               });
 
             }
 
 
-            // =====================================
-            // 找出股票市场状态
-            // =====================================
+            // =========================
+            // 市场状态
+            // =========================
 
-            let marketStatus =
-              "美股休市";
+            const marketStatus =
+              getMarketStatus(
+                stocks[0]
+              );
+
+            console.log(
+              "市场状态:",
+              marketStatus
+            );
 
 
-            for (
-              const stock
-              of stocks
-            ) {
+            // =========================
+            // 当前时间
+            // =========================
 
-              if (
-                stock.marketState ===
-                "REGULAR"
-              ) {
+            const updatedAt =
+              new Date().toISOString();
 
-                marketStatus =
-                  "美股交易中";
 
-                break;
+            // =========================
+            // 读取旧数据
+            // =========================
 
-              }
+            let oldData = {};
 
-              if (
-                stock.marketState ===
-                "PRE"
-              ) {
-
-                marketStatus =
-                  "美股盘前";
-
-              }
+            try {
 
               if (
-                stock.marketState ===
-                "POST"
+                fs.existsSync("data.json")
               ) {
 
-                marketStatus =
-                  "美股盘后";
+                oldData =
+                  JSON.parse(
+                    fs.readFileSync(
+                      "data.json",
+                      "utf8"
+                    )
+                  );
 
               }
 
             }
+            catch(error) {
+
+              console.log(
+                "读取旧数据失败，重新建立历史记录"
+              );
+
+            }
 
 
-            // =====================================
+            // =========================
+            // 历史行情
+            //
+            // 每次运行保存一条
+            // 最多保存120条
+            // =========================
+
+            let history =
+              Array.isArray(
+                oldData.history
+              )
+                ? oldData.history
+                : [];
+
+
+            const snapshot = {
+
+              timestamp:
+                updatedAt,
+
+              stocks:
+                stocks.map(item => ({
+                  symbol:
+                    item.symbol,
+
+                  price:
+                    item.price,
+
+                  change:
+                    item.change
+                })),
+
+              indices: {
+
+                nasdaq: {
+                  price:
+                    nasdaq.price,
+
+                  change:
+                    nasdaq.change
+                },
+
+                sp500: {
+                  price:
+                    sp500.price,
+
+                  change:
+                    sp500.change
+                }
+
+              },
+
+              crypto:
+                crypto.map(item => ({
+                  symbol:
+                    item.symbol,
+
+                  price:
+                    item.price,
+
+                  change:
+                    item.change
+                }))
+
+            };
+
+
+            history.push(
+              snapshot
+            );
+
+
+            // 只保留最近120条
+            if (
+              history.length > 120
+            ) {
+
+              history =
+                history.slice(
+                  -120
+                );
+
+            }
+
+
+            console.log(
+              "历史记录数量:",
+              history.length
+            );
+
+
+            // =========================
             // 最终数据
-            // =====================================
+            // =========================
 
             const output = {
 
               success: true,
 
-              updatedAt:
-                new Date().toISOString(),
+              updatedAt,
 
               marketStatus,
 
@@ -726,14 +570,16 @@ jobs:
 
               },
 
-              crypto
+              crypto,
+
+              history
 
             };
 
 
-            // =====================================
+            // =========================
             // 写入 data.json
-            // =====================================
+            // =========================
 
             fs.writeFileSync(
 
@@ -749,11 +595,17 @@ jobs:
 
 
             console.log(
-              "================================="
+              "================================"
             );
 
             console.log(
               "行情数据已经写入 data.json"
+            );
+
+            console.log(
+              "历史记录:",
+              history.length,
+              "条"
             );
 
             console.log(
@@ -762,30 +614,28 @@ jobs:
             );
 
             console.log(
-              "================================="
+              "================================"
             );
 
           }
 
 
-          main()
-            .catch(error => {
+          main().catch(error => {
 
-              console.error(
-                error
-              );
+            console.error(
+              error
+            );
 
-              process.exit(1);
+            process.exit(1);
 
-            });
-
+          });
 
           EOF
 
 
-      # =========================================
-      # 提交 data.json
-      # =========================================
+      # =========================
+      # 3. 提交数据
+      # =========================
 
       - name: Commit updated data
         run: |
@@ -800,6 +650,6 @@ jobs:
 
           git diff --cached --quiet || \
             git commit \
-              -m "Update market data"
+            -m "Update market data"
 
           git push
