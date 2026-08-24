@@ -14,15 +14,9 @@ jobs:
 
     steps:
 
-      # =========================
-      # 1. 获取仓库
-      # =========================
       - name: Checkout
         uses: actions/checkout@v4
 
-      # =========================
-      # 2. 获取最新行情
-      # =========================
       - name: Update market data
         env:
           TZ: Asia/Shanghai
@@ -31,6 +25,10 @@ jobs:
           node <<'EOF'
 
           const fs = require("fs");
+
+          // =========================
+          // 通用 JSON 请求
+          // =========================
 
           async function getJSON(url) {
 
@@ -52,6 +50,7 @@ jobs:
 
           // =========================
           // Yahoo Finance
+          // 美股 / NASDAQ / S&P500
           // =========================
 
           async function yahoo(symbol) {
@@ -82,56 +81,56 @@ jobs:
             let change = 0;
 
             if (previous) {
+
               change =
                 ((price - previous) / previous) * 100;
+
             }
 
             return {
+
               symbol,
+
               price,
+
               change,
-              previousClose: previous,
+
+              previousClose:
+                previous,
+
               marketState:
                 meta.marketState || ""
+
             };
+
           }
 
 
           // =========================
-          // Binance
+          // OKX 加密货币
+          // BTC / ETH / BNB / OKB
           // =========================
 
-          async function binance(symbol) {
+          async function okx(symbol) {
 
             const url =
-              "https://api.binance.com/api/v3/ticker/24hr?symbol=" +
+              "https://www.okx.com/api/v5/market/ticker?instId=" +
               symbol +
-              "USDT";
-
-            const data =
-              await getJSON(url);
-
-            return {
-              symbol,
-              price:
-                Number(data.lastPrice),
-              change:
-                Number(data.priceChangePercent)
-            };
-          }
-
-
-          // =========================
-          // OKX
-          // =========================
-
-          async function okxOKB() {
-
-            const url =
-              "https://www.okx.com/api/v5/market/ticker?instId=OKB-USDT";
+              "-USDT";
 
             const response =
               await getJSON(url);
+
+            if (
+              !response.data ||
+              !response.data.length
+            ) {
+
+              throw new Error(
+                "OKX没有返回数据"
+              );
+
+            }
 
             const item =
               response.data[0];
@@ -140,25 +139,32 @@ jobs:
               Number(item.last);
 
             const open =
-              Number(item.sodUtc0);
+              Number(item.open24h);
 
             let change = 0;
 
             if (open) {
+
               change =
                 ((price - open) / open) * 100;
+
             }
 
             return {
-              symbol: "OKB",
+
+              symbol,
+
               price,
+
               change
+
             };
+
           }
 
 
           // =========================
-          // 判断美股市场状态
+          // 美股市场状态
           // =========================
 
           function getMarketStatus(stock) {
@@ -169,22 +175,29 @@ jobs:
             if (
               state === "REGULAR"
             ) {
+
               return "美股交易中";
+
             }
 
             if (
               state === "PRE"
             ) {
+
               return "美股盘前";
+
             }
 
             if (
               state === "POST"
             ) {
+
               return "美股盘后";
+
             }
 
             return "美股休市";
+
           }
 
 
@@ -212,18 +225,21 @@ jobs:
 
 
             // =========================
-            // 股票
+            // 美股
             // =========================
 
             const stockSymbols = [
+
               "NVDA",
               "TSLA",
               "AAPL",
               "MSTR",
               "STRC"
+
             ];
 
             const stocks = [];
+
 
             for (
               const symbol of stockSymbols
@@ -235,10 +251,7 @@ jobs:
                   await yahoo(symbol);
 
                 console.log(
-                  `${symbol}:`,
-                  item.price,
-                  item.change,
-                  item.marketState
+                  `${symbol}: ${item.price} ${item.change}`
                 );
 
                 stocks.push(item);
@@ -253,11 +266,17 @@ jobs:
                 );
 
                 stocks.push({
+
                   symbol,
+
                   price: 0,
+
                   change: 0,
+
                   previousClose: 0,
+
                   marketState: ""
+
                 });
 
               }
@@ -285,9 +304,13 @@ jobs:
               );
 
               nasdaq = {
+
                 symbol: "^IXIC",
+
                 price: 0,
+
                 change: 0
+
               };
 
             }
@@ -313,9 +336,13 @@ jobs:
               );
 
               sp500 = {
+
                 symbol: "^GSPC",
+
                 price: 0,
+
                 change: 0
+
               };
 
             }
@@ -323,27 +350,32 @@ jobs:
 
             // =========================
             // 加密货币
+            // 全部改成 OKX
             // =========================
+
+            const cryptoSymbols = [
+
+              "BTC",
+              "ETH",
+              "BNB",
+              "OKB"
+
+            ];
 
             const crypto = [];
 
+
             for (
-              const symbol of [
-                "BTC",
-                "ETH",
-                "BNB"
-              ]
+              const symbol of cryptoSymbols
             ) {
 
               try {
 
                 const item =
-                  await binance(symbol);
+                  await okx(symbol);
 
                 console.log(
-                  `${symbol}:`,
-                  item.price,
-                  item.change
+                  `${symbol}: ${item.price} ${item.change}`
                 );
 
                 crypto.push(item);
@@ -352,52 +384,22 @@ jobs:
               catch(error) {
 
                 console.error(
-                  "Binance获取失败:",
+                  "OKX获取失败:",
                   symbol,
                   error.message
                 );
 
                 crypto.push({
+
                   symbol,
+
                   price: 0,
+
                   change: 0
+
                 });
 
               }
-
-            }
-
-
-            // =========================
-            // OKB
-            // =========================
-
-            try {
-
-              const okb =
-                await okxOKB();
-
-              console.log(
-                "OKB:",
-                okb.price,
-                okb.change
-              );
-
-              crypto.push(okb);
-
-            }
-            catch(error) {
-
-              console.error(
-                "OKB获取失败:",
-                error.message
-              );
-
-              crypto.push({
-                symbol: "OKB",
-                price: 0,
-                change: 0
-              });
 
             }
 
@@ -410,6 +412,7 @@ jobs:
               getMarketStatus(
                 stocks[0]
               );
+
 
             console.log(
               "市场状态:",
@@ -426,7 +429,7 @@ jobs:
 
 
             // =========================
-            // 读取旧数据
+            // 读取旧 data.json
             // =========================
 
             let oldData = {};
@@ -451,17 +454,14 @@ jobs:
             catch(error) {
 
               console.log(
-                "读取旧数据失败，重新建立历史记录"
+                "读取旧数据失败，重新建立"
               );
 
             }
 
 
             // =========================
-            // 历史行情
-            //
-            // 每次运行保存一条
-            // 最多保存120条
+            // 历史记录
             // =========================
 
             let history =
@@ -479,6 +479,7 @@ jobs:
 
               stocks:
                 stocks.map(item => ({
+
                   symbol:
                     item.symbol,
 
@@ -487,30 +488,36 @@ jobs:
 
                   change:
                     item.change
+
                 })),
 
               indices: {
 
                 nasdaq: {
+
                   price:
                     nasdaq.price,
 
                   change:
                     nasdaq.change
+
                 },
 
                 sp500: {
+
                   price:
                     sp500.price,
 
                   change:
                     sp500.change
+
                 }
 
               },
 
               crypto:
                 crypto.map(item => ({
+
                   symbol:
                     item.symbol,
 
@@ -519,6 +526,7 @@ jobs:
 
                   change:
                     item.change
+
                 }))
 
             };
@@ -529,15 +537,13 @@ jobs:
             );
 
 
-            // 只保留最近120条
+            // 最多保存120条
             if (
               history.length > 120
             ) {
 
               history =
-                history.slice(
-                  -120
-                );
+                history.slice(-120);
 
             }
 
@@ -609,11 +615,6 @@ jobs:
             );
 
             console.log(
-              "市场状态:",
-              marketStatus
-            );
-
-            console.log(
               "================================"
             );
 
@@ -622,9 +623,7 @@ jobs:
 
           main().catch(error => {
 
-            console.error(
-              error
-            );
+            console.error(error);
 
             process.exit(1);
 
@@ -634,7 +633,7 @@ jobs:
 
 
       # =========================
-      # 3. 提交数据
+      # 提交数据
       # =========================
 
       - name: Commit updated data
