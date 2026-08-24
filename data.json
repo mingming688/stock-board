@@ -1,72 +1,58 @@
 {
   "success": true,
-  "updatedAt": "2026-08-24T16:06:47.153Z",
+  "updatedAt": "2026-08-24T16:26:38.915Z",
   "marketStatus": "美股休市",
   "stocks": [
     {
       "symbol": "NVDA",
-      "price": 210.1999969482422,
-      "change": -2.105068485356656,
+      "price": 210.781,
+      "change": -1.834482116244408,
       "previousClose": 214.72,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:45.000Z"
+      "marketState": ""
     },
     {
       "symbol": "TSLA",
-      "price": 355.7550048828125,
-      "change": -1.9580541027359073,
+      "price": 357.06,
+      "change": -1.5984126109243264,
       "previousClose": 362.86,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:43.000Z"
+      "marketState": ""
     },
     {
       "symbol": "AAPL",
-      "price": 311.468505859375,
-      "change": 0.6848249100937376,
+      "price": 311.7,
+      "change": 0.7596573460481544,
       "previousClose": 309.35,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:44.000Z"
+      "marketState": ""
     },
     {
       "symbol": "MSTR",
-      "price": 125.55999755859375,
-      "change": 5.29140256485849,
+      "price": 125,
+      "change": 4.821802935010482,
       "previousClose": 119.25,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:45.000Z"
+      "marketState": ""
     },
     {
       "symbol": "STRC",
-      "price": 96.97000122070312,
-      "change": 0.8213778547547494,
+      "price": 96.95,
+      "change": 0.8005822416302724,
       "previousClose": 96.18,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:19.000Z"
+      "marketState": ""
     }
   ],
   "indices": {
     "nasdaq": {
       "symbol": "^IXIC",
-      "price": 26074.640625,
-      "change": -0.4041731704051811,
+      "price": 26093.34,
+      "change": -0.3327482276377611,
       "previousClose": 26180.455,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:43.000Z"
+      "marketState": ""
     },
     "sp500": {
       "symbol": "^GSPC",
-      "price": 7664.56982421875,
-      "change": -0.12770006894702615,
+      "price": 7666.8,
+      "change": -0.09864001865950833,
       "previousClose": 7674.37,
-      "marketState": "",
-      "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:06:45.000Z"
+      "marketState": ""
     }
   },
   "crypto": [
@@ -87,8 +73,72 @@
     },
     {
       "symbol": "OKB",
-      "price": 115.44,
-      "change": 3.2004291078133367
+      "price": 115.07,
+      "change": 2.869658501698546
+    }
+  ],
+  "history": [
+    {
+      "timestamp": "2026-08-24T16:26:38.915Z",
+      "stocks": [
+        {
+          "symbol": "NVDA",
+          "price": 210.781,
+          "change": -1.834482116244408
+        },
+        {
+          "symbol": "TSLA",
+          "price": 357.06,
+          "change": -1.5984126109243264
+        },
+        {
+          "symbol": "AAPL",
+          "price": 311.7,
+          "change": 0.7596573460481544
+        },
+        {
+          "symbol": "MSTR",
+          "price": 125,
+          "change": 4.821802935010482
+        },
+        {
+          "symbol": "STRC",
+          "price": 96.95,
+          "change": 0.8005822416302724
+        }
+      ],
+      "indices": {
+        "nasdaq": {
+          "price": 26093.34,
+          "change": -0.3327482276377611
+        },
+        "sp500": {
+          "price": 7666.8,
+          "change": -0.09864001865950833
+        }
+      },
+      "crypto": [
+        {
+          "symbol": "BTC",
+          "price": 0,
+          "change": 0
+        },
+        {
+          "symbol": "ETH",
+          "price": 0,
+          "change": 0
+        },
+        {
+          "symbol": "BNB",
+          "price": 0,
+          "change": 0
+        },
+        {
+          "symbol": "OKB",
+          "price": 115.07,
+          "change": 2.869658501698546
+        }
+      ]
     }
   ]
 }
