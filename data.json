@@ -1,72 +1,72 @@
 {
   "success": true,
-  "updatedAt": "2026-08-24T16:02:46.806Z",
+  "updatedAt": "2026-08-24T16:06:47.153Z",
   "marketStatus": "美股休市",
   "stocks": [
     {
       "symbol": "NVDA",
-      "price": 210.18499755859375,
-      "change": -2.112054043128842,
+      "price": 210.1999969482422,
+      "change": -2.105068485356656,
       "previousClose": 214.72,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:44.000Z"
+      "priceTime": "2026-08-24T16:06:45.000Z"
     },
     {
       "symbol": "TSLA",
-      "price": 355.7001953125,
-      "change": -1.9731589834922598,
+      "price": 355.7550048828125,
+      "change": -1.9580541027359073,
       "previousClose": 362.86,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:45.000Z"
+      "priceTime": "2026-08-24T16:06:43.000Z"
     },
     {
       "symbol": "AAPL",
-      "price": 311.69989013671875,
-      "change": 0.7596218318146847,
+      "price": 311.468505859375,
+      "change": 0.6848249100937376,
       "previousClose": 309.35,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:44.000Z"
+      "priceTime": "2026-08-24T16:06:44.000Z"
     },
     {
       "symbol": "MSTR",
-      "price": 125.13999938964844,
-      "change": 4.9392028424724845,
+      "price": 125.55999755859375,
+      "change": 5.29140256485849,
       "previousClose": 119.25,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:43.000Z"
+      "priceTime": "2026-08-24T16:06:45.000Z"
     },
     {
       "symbol": "STRC",
-      "price": 96.94999694824219,
-      "change": 0.8005790686651909,
+      "price": 96.97000122070312,
+      "change": 0.8213778547547494,
       "previousClose": 96.18,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:42.000Z"
+      "priceTime": "2026-08-24T16:06:19.000Z"
     }
   ],
   "indices": {
     "nasdaq": {
       "symbol": "^IXIC",
-      "price": 26077.494140625,
-      "change": -0.39327375851566265,
+      "price": 26074.640625,
+      "change": -0.4041731704051811,
       "previousClose": 26180.455,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:44.000Z"
+      "priceTime": "2026-08-24T16:06:43.000Z"
     },
     "sp500": {
       "symbol": "^GSPC",
-      "price": 7666.43017578125,
-      "change": -0.10345897081779862,
+      "price": 7664.56982421875,
+      "change": -0.12770006894702615,
       "previousClose": 7674.37,
       "marketState": "",
       "marketStatus": "美股休市",
-      "priceTime": "2026-08-24T16:02:45.000Z"
+      "priceTime": "2026-08-24T16:06:45.000Z"
     }
   },
   "crypto": [
@@ -87,8 +87,8 @@
     },
     {
       "symbol": "OKB",
-      "price": 115.03,
-      "change": 2.8338995172537116
+      "price": 115.44,
+      "change": 3.2004291078133367
     }
   ]
 }
