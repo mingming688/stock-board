@@ -5,17 +5,18 @@
 
 <meta name="viewport"
       content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
+               initial-scale=1,
+               maximum-scale=1,
                user-scalable=no">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#05070a">
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent">
 
 <title>美股行情</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
@@ -25,27 +26,27 @@ html,
 body{
     margin:0;
     padding:0;
-    background:#05070a;
-    color:#f4f7fb;
+    width:100%;
+    min-height:100%;
+    background:#050608;
+    color:#f5f7fa;
     font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "Segoe UI",
-        "PingFang SC",
-        "Microsoft YaHei",
+        "Helvetica Neue",
         Arial,
         sans-serif;
 }
 
 body{
-    min-height:100vh;
+    overflow-x:hidden;
 }
 
-.wrap{
+#app{
     width:100%;
-    max-width:1200px;
+    max-width:1400px;
     margin:0 auto;
-    padding:18px 14px 40px;
+    padding:14px;
 }
 
 /* =========================
@@ -55,72 +56,82 @@ body{
 .header{
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
-    padding-bottom:14px;
-    border-bottom:1px solid #20252d;
+    align-items:flex-end;
+
+    padding-bottom:10px;
+    margin-bottom:5px;
+
+    border-bottom:1px solid #20242a;
 }
 
 .title{
-    font-size:28px;
+    font-size:24px;
     font-weight:800;
-    letter-spacing:.5px;
 }
 
 .subtitle{
-    margin-top:5px;
-    color:#7e8a9b;
-    font-size:12px;
+    margin-top:3px;
+    font-size:11px;
+    color:#78818c;
 }
 
 .clock{
-    color:#8fb9ff;
-    font-size:13px;
-    padding-top:3px;
+    font-size:12px;
+    color:#9ca5af;
 }
 
 /* =========================
    股票
 ========================= */
 
-.stock-list{
-    margin-top:4px;
-}
-
 .stock-row{
     display:grid;
     grid-template-columns:1fr 1fr 1fr;
+
     align-items:center;
-    min-height:62px;
-    border-bottom:1px solid #20252d;
+
+    min-height:54px;
+
+    border-bottom:1px solid #20242a;
 }
 
 .stock-symbol{
-    font-size:22px;
+    font-size:19px;
     font-weight:800;
 }
 
 .stock-price{
     text-align:center;
-    font-size:20px;
-    font-weight:800;
+
+    font-size:18px;
+    font-weight:750;
+
+    font-variant-numeric:tabular-nums;
 }
 
 .stock-change{
     text-align:right;
-    font-size:17px;
-    font-weight:800;
+
+    font-size:16px;
+    font-weight:750;
+
+    font-variant-numeric:tabular-nums;
 }
 
-.green{
-    color:#00d995;
+/* =========================
+   涨跌颜色
+========================= */
+
+.up{
+    color:#19d889;
 }
 
-.red{
-    color:#ff4767;
+.down{
+    color:#ff4d63;
 }
 
-.gray{
-    color:#7e8a9b;
+.flat{
+    color:#9aa3ad;
 }
 
 /* =========================
@@ -128,11 +139,11 @@ body{
 ========================= */
 
 .section-title{
-    margin-top:14px;
-    margin-bottom:7px;
-    color:#82a8d9;
-    font-size:13px;
-    letter-spacing:.2px;
+    margin-top:12px;
+    margin-bottom:6px;
+
+    font-size:12px;
+    color:#89939e;
 }
 
 /* =========================
@@ -146,27 +157,24 @@ body{
 }
 
 .index-card{
-    background:#0d1117;
-    border-radius:8px;
-    padding:9px 10px;
-    min-height:54px;
+    background:#0c0f13;
+    border-radius:7px;
+
+    padding:8px 10px;
+
+    min-height:48px;
 }
 
 .index-name{
-    color:#8da3c4;
-    font-size:12px;
+    font-size:11px;
+    color:#8d97a2;
 }
 
-.index-price{
-    margin-top:2px;
-    font-size:18px;
-    font-weight:700;
-}
+.index-value{
+    margin-top:3px;
 
-.index-change{
-    font-size:13px;
-    font-weight:700;
-    margin-left:5px;
+    font-size:15px;
+    font-weight:750;
 }
 
 /* =========================
@@ -175,32 +183,39 @@ body{
 
 .crypto-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:
+        repeat(4,1fr);
+
     gap:8px;
 }
 
 .crypto-card{
-    background:#0d1117;
-    border-radius:8px;
-    padding:10px;
-    min-height:72px;
+    background:#0c0f13;
+    border-radius:7px;
+
+    padding:9px;
+
+    min-height:65px;
 }
 
-.crypto-name{
-    font-size:15px;
+.crypto-symbol{
+    font-size:13px;
     font-weight:800;
 }
 
 .crypto-price{
     margin-top:3px;
-    color:#9bb0ce;
+
     font-size:15px;
-    font-weight:700;
+    font-weight:750;
+
+    font-variant-numeric:tabular-nums;
 }
 
 .crypto-change{
     margin-top:2px;
-    font-size:12px;
+
+    font-size:11px;
     font-weight:700;
 }
 
@@ -208,134 +223,111 @@ body{
    行情走势
 ========================= */
 
-.chart-panel{
+.chart-box{
     margin-top:16px;
-    padding:12px;
-    background:#0b0f14;
-    border:1px solid #1d2530;
+
+    background:#090c10;
+
+    border:1px solid #202630;
     border-radius:10px;
+
+    padding:12px;
 }
 
-.chart-head{
+.chart-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
+
+    margin-bottom:8px;
 }
 
 .chart-title{
-    font-size:14px;
-    color:#91a8ca;
+    font-size:15px;
+    color:#b9c3ce;
 }
 
-.chart-info{
-    font-size:11px;
-    color:#667386;
+.history-count{
+    font-size:10px;
+    color:#697582;
 }
 
 .chart-buttons{
     display:flex;
-    gap:5px;
-    margin-top:9px;
+    gap:6px;
+
+    margin-bottom:12px;
 }
 
 .chart-button{
     border:0;
-    background:#161d26;
-    color:#8390a2;
     border-radius:6px;
-    padding:5px 9px;
+
+    background:#111720;
+    color:#9aa7b5;
+
+    padding:7px 12px;
+
     font-size:11px;
 }
 
 .chart-button.active{
-    background:#263d60;
-    color:#b9d4ff;
+    background:#27496f;
+    color:white;
 }
 
-.chart-stock{
-    margin-top:12px;
+.chart-item{
+    margin-top:10px;
     padding-top:10px;
-    border-top:1px solid #1c222b;
-}
 
-.chart-stock-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:5px;
+    border-top:1px solid #20242a;
 }
 
 .chart-symbol{
     font-size:14px;
     font-weight:800;
+
+    margin-bottom:4px;
 }
 
-.chart-last{
-    font-size:12px;
-    color:#93a7c5;
-}
-
-canvas{
-    display:block;
+.chart-svg{
     width:100%;
-    height:90px;
+    height:120px;
+
+    display:block;
 }
 
 /* =========================
-   底部状态
+   底部
 ========================= */
 
-.status{
+.footer{
+    margin-top:12px;
+
     text-align:center;
-    margin-top:13px;
-    color:#647286;
-    font-size:11px;
-    line-height:1.7;
+
+    font-size:10px;
+    line-height:1.6;
+
+    color:#58616b;
 }
 
 /* =========================
-   手机适配
+   手机
 ========================= */
 
 @media(max-width:600px){
 
-    .wrap{
-        padding:14px 10px 30px;
+    #app{
+        padding:9px;
     }
 
     .title{
-        font-size:24px;
+        font-size:21px;
     }
 
     .stock-row{
-        min-height:58px;
-    }
-
-    .stock-symbol{
-        font-size:19px;
-    }
-
-    .stock-price{
-        font-size:17px;
-    }
-
-    .stock-change{
-        font-size:14px;
-    }
-
-    .crypto-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .crypto-card{
-        min-height:68px;
-    }
-}
-
-@media(max-width:380px){
-
-    .title{
-        font-size:22px;
+        min-height:49px;
     }
 
     .stock-symbol{
@@ -347,40 +339,106 @@ canvas{
     }
 
     .stock-change{
-        font-size:13px;
+        font-size:14px;
     }
 
-    .clock{
-        font-size:11px;
+    .crypto-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+
+        gap:6px;
     }
+
+    .crypto-card{
+        min-height:58px;
+        padding:8px;
+    }
+
+    .crypto-price{
+        font-size:14px;
+    }
+
+    .chart-box{
+        padding:9px;
+    }
+
 }
+
+/* =========================
+   iPhone 6 Plus
+========================= */
+
+@media(max-width:414px){
+
+    #app{
+        padding:8px;
+    }
+
+    .title{
+        font-size:20px;
+    }
+
+    .stock-row{
+        min-height:47px;
+    }
+
+    .stock-symbol{
+        font-size:17px;
+    }
+
+    .stock-price{
+        font-size:16px;
+    }
+
+    .stock-change{
+        font-size:14px;
+    }
+
+    .chart-svg{
+        height:105px;
+    }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="wrap">
+<div id="app">
 
-    <!-- 顶部 -->
+    <!-- =====================
+         顶部
+    ====================== -->
+
     <div class="header">
 
         <div>
-            <div class="title">美股行情</div>
+
+            <div class="title">
+                美股行情
+            </div>
 
             <div class="subtitle">
                 iPhone 6 Plus · 自动更新
             </div>
+
         </div>
 
-        <div id="clock" class="clock">
+        <div id="clock"
+             class="clock">
             --:--:--
         </div>
 
     </div>
 
 
-    <!-- 股票 -->
-    <div id="stocks" class="stock-list">
+    <!-- =====================
+         美股
+    ====================== -->
+
+    <div id="stocks">
+
         <div class="stock-row">
             <div class="stock-symbol">NVDA</div>
             <div class="stock-price">--</div>
@@ -410,76 +468,146 @@ canvas{
             <div class="stock-price">--</div>
             <div class="stock-change">--</div>
         </div>
+
     </div>
 
 
-    <!-- 指数 -->
+    <!-- =====================
+         指数
+    ====================== -->
+
     <div class="section-title">
         MARKET INDEX
     </div>
 
-    <div id="indexes" class="index-grid">
+    <div class="index-grid">
 
         <div class="index-card">
-            <div class="index-name">NASDAQ</div>
-            <span class="index-price">--</span>
-            <span class="index-change">--</span>
+
+            <div class="index-name">
+                NASDAQ
+            </div>
+
+            <div id="nasdaq"
+                 class="index-value">
+                --
+            </div>
+
         </div>
 
+
         <div class="index-card">
-            <div class="index-name">S&amp;P 500</div>
-            <span class="index-price">--</span>
-            <span class="index-change">--</span>
+
+            <div class="index-name">
+                S&P 500
+            </div>
+
+            <div id="sp500"
+                 class="index-value">
+                --
+            </div>
+
         </div>
 
     </div>
 
 
-    <!-- 加密货币 -->
+    <!-- =====================
+         加密货币
+    ====================== -->
+
     <div class="section-title">
         CRYPTO · 加密货币
     </div>
 
-    <div id="crypto" class="crypto-grid">
+    <div id="crypto"
+         class="crypto-grid">
 
         <div class="crypto-card">
-            <div class="crypto-name">BTC</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
+
+            <div class="crypto-symbol">
+                BTC
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
         </div>
 
-        <div class="crypto-card">
-            <div class="crypto-name">ETH</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
-        </div>
 
         <div class="crypto-card">
-            <div class="crypto-name">BNB</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
+
+            <div class="crypto-symbol">
+                ETH
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
         </div>
 
+
         <div class="crypto-card">
-            <div class="crypto-name">OKB</div>
-            <div class="crypto-price">--</div>
-            <div class="crypto-change">--</div>
+
+            <div class="crypto-symbol">
+                BNB
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="crypto-card">
+
+            <div class="crypto-symbol">
+                OKB
+            </div>
+
+            <div class="crypto-price">
+                --
+            </div>
+
+            <div class="crypto-change">
+                --
+            </div>
+
         </div>
 
     </div>
 
 
-    <!-- 行情走势 -->
-    <div class="chart-panel">
+    <!-- =====================
+         行情走势
+    ====================== -->
 
-        <div class="chart-head">
+    <div class="chart-box">
+
+        <div class="chart-header">
 
             <div class="chart-title">
                 行情走势
             </div>
 
-            <div id="chartInfo" class="chart-info">
-                等待数据
+            <div id="historyCount"
+                 class="history-count">
+                0 次记录
             </div>
 
         </div>
@@ -487,141 +615,44 @@ canvas{
 
         <div class="chart-buttons">
 
-            <button
-                class="chart-button active"
-                data-range="20"
-                onclick="changeRange(20,this)">
+            <button class="chart-button active"
+                    data-count="20">
                 20次
             </button>
 
-            <button
-                class="chart-button"
-                data-range="60"
-                onclick="changeRange(60,this)">
+            <button class="chart-button"
+                    data-count="60">
                 60次
             </button>
 
-            <button
-                class="chart-button"
-                data-range="120"
-                onclick="changeRange(120,this)">
+            <button class="chart-button"
+                    data-count="120">
                 120次
             </button>
 
         </div>
 
 
-        <!-- NVDA -->
-        <div class="chart-stock">
-
-            <div class="chart-stock-head">
-
-                <div class="chart-symbol">
-                    NVDA
-                </div>
-
-                <div id="nvdaLast" class="chart-last">
-                    --
-                </div>
-
-            </div>
-
-            <canvas id="chartNVDA"></canvas>
-
-        </div>
-
-
-        <!-- TSLA -->
-        <div class="chart-stock">
-
-            <div class="chart-stock-head">
-
-                <div class="chart-symbol">
-                    TSLA
-                </div>
-
-                <div id="tslaLast" class="chart-last">
-                    --
-                </div>
-
-            </div>
-
-            <canvas id="chartTSLA"></canvas>
-
-        </div>
-
-
-        <!-- AAPL -->
-        <div class="chart-stock">
-
-            <div class="chart-stock-head">
-
-                <div class="chart-symbol">
-                    AAPL
-                </div>
-
-                <div id="aaplLast" class="chart-last">
-                    --
-                </div>
-
-            </div>
-
-            <canvas id="chartAAPL"></canvas>
-
-        </div>
-
-
-        <!-- MSTR -->
-        <div class="chart-stock">
-
-            <div class="chart-stock-head">
-
-                <div class="chart-symbol">
-                    MSTR
-                </div>
-
-                <div id="mstrLast" class="chart-last">
-                    --
-                </div>
-
-            </div>
-
-            <canvas id="chartMSTR"></canvas>
-
-        </div>
-
-
-        <!-- STRC -->
-        <div class="chart-stock">
-
-            <div class="chart-stock-head">
-
-                <div class="chart-symbol">
-                    STRC
-                </div>
-
-                <div id="strcLast" class="chart-last">
-                    --
-                </div>
-
-            </div>
-
-            <canvas id="chartSTRC"></canvas>
-
-        </div>
+        <div id="charts"></div>
 
     </div>
 
 
-    <!-- 状态 -->
-    <div class="status">
+    <!-- =====================
+         底部
+    ====================== -->
+
+    <div class="footer">
 
         <div id="marketStatus">
-            正在获取行情
+            行情更新中
         </div>
 
-        <div id="lastUpdate">
-            最后更新：--
+        <div>
+            最后更新：
+            <span id="updated">
+                --
+            </span>
         </div>
 
     </div>
@@ -631,62 +662,47 @@ canvas{
 
 <script>
 
-/* =========================================================
-   基本设置
-========================================================= */
+/* ==================================================
+   直接读取 GitHub Pages 自己的 data.json
+   不再使用 Cloudflare Worker
+================================================== */
 
-var STOCKS = [
-    "NVDA",
-    "TSLA",
-    "AAPL",
-    "MSTR",
-    "STRC"
-];
-
-var CRYPTO = [
-    "BTC",
-    "ETH",
-    "BNB",
-    "OKB"
-];
-
-var RANGE = 20;
-
-var DATA_URL = "data.json";
+var DATA_URL =
+    "./data.json";
 
 
-/* =========================================================
+/* ==================================================
    工具
-========================================================= */
+================================================== */
 
-function $(id){
-    return document.getElementById(id);
-}
+function formatPrice(value){
 
-
-function formatMoney(value){
-
-    if(value === null ||
-       value === undefined ||
-       isNaN(value)){
+    if(
+        value === null ||
+        value === undefined ||
+        isNaN(value)
+    ){
         return "--";
     }
 
-    return "$" + Number(value).toLocaleString(
+    return Number(value).toLocaleString(
         "en-US",
         {
             minimumFractionDigits:2,
             maximumFractionDigits:2
         }
     );
+
 }
 
 
-function formatChange(value){
+function formatPercent(value){
 
-    if(value === null ||
-       value === undefined ||
-       isNaN(value)){
+    if(
+        value === null ||
+        value === undefined ||
+        isNaN(value)
+    ){
         return "--";
     }
 
@@ -701,37 +717,50 @@ function formatChange(value){
     }
 
     return "— 0.00%";
+
 }
 
 
 function changeClass(value){
 
-    if(value > 0){
-        return "green";
+    if(Number(value) > 0){
+        return "up";
     }
 
-    if(value < 0){
-        return "red";
+    if(Number(value) < 0){
+        return "down";
     }
 
-    return "gray";
+    return "flat";
+
 }
 
 
-/* =========================================================
+/* ==================================================
    时钟
-========================================================= */
+================================================== */
 
 function updateClock(){
 
-    var d = new Date();
+    var now = new Date();
 
-    var h = String(d.getHours()).padStart(2,"0");
-    var m = String(d.getMinutes()).padStart(2,"0");
-    var s = String(d.getSeconds()).padStart(2,"0");
+    var h =
+        String(now.getHours())
+        .padStart(2,"0");
 
-    $("clock").textContent =
+    var m =
+        String(now.getMinutes())
+        .padStart(2,"0");
+
+    var s =
+        String(now.getSeconds())
+        .padStart(2,"0");
+
+    document.getElementById(
+        "clock"
+    ).textContent =
         h + ":" + m + ":" + s;
+
 }
 
 setInterval(updateClock,1000);
@@ -739,916 +768,682 @@ setInterval(updateClock,1000);
 updateClock();
 
 
-/* =========================================================
-   本地走势历史
-========================================================= */
+/* ==================================================
+   更新股票
+================================================== */
 
-function loadHistory(){
+function updateStocks(data){
 
-    try{
-
-        var text =
-            localStorage.getItem(
-                "stockBoardHistoryV1"
-            );
-
-        if(!text){
-            return [];
-        }
-
-        var arr = JSON.parse(text);
-
-        if(Array.isArray(arr)){
-            return arr;
-        }
-
-    }catch(e){}
-
-    return [];
-}
-
-
-function saveHistory(history){
-
-    try{
-
-        /*
-         * 最多保存500次
-         * 防止老 iPhone localStorage 太大
-         */
-
-        if(history.length > 500){
-
-            history =
-                history.slice(
-                    history.length - 500
-                );
-        }
-
-        localStorage.setItem(
-            "stockBoardHistoryV1",
-            JSON.stringify(history)
-        );
-
-    }catch(e){}
-}
-
-
-/* =========================================================
-   保存当前行情
-========================================================= */
-
-function recordHistory(data){
-
-    if(!data ||
-       !Array.isArray(data.stocks)){
-        return;
-    }
-
-    var history = loadHistory();
-
-    var item = {
-        time: Date.now(),
-        stocks:{}
-    };
-
-
-    data.stocks.forEach(function(stock){
-
-        if(stock &&
-           stock.symbol &&
-           typeof stock.price === "number"){
-
-            item.stocks[
-                stock.symbol
-            ] = Number(stock.price);
-        }
-
-    });
-
-
-    /*
-     * 避免同一分钟反复刷新产生大量重复点
-     */
-
-    if(history.length){
-
-        var last =
-            history[history.length - 1];
-
-        if(
-            last.stocks &&
-            last.stocks.NVDA === item.stocks.NVDA &&
-            last.stocks.TSLA === item.stocks.TSLA &&
-            last.stocks.AAPL === item.stocks.AAPL &&
-            last.stocks.MSTR === item.stocks.MSTR &&
-            last.stocks.STRC === item.stocks.STRC
-        ){
-
-            return;
-        }
-    }
-
-
-    history.push(item);
-
-    saveHistory(history);
-}
-
-
-/* =========================================================
-   画走势
-========================================================= */
-
-function drawLineChart(
-    canvasId,
-    ticker
-){
-
-    var canvas = $(canvasId);
-
-    if(!canvas){
-        return;
-    }
-
-    var rect =
-        canvas.getBoundingClientRect();
-
-    var width =
-        Math.max(
-            280,
-            Math.floor(rect.width)
-        );
-
-    var height = 90;
-
-    var dpr =
-        window.devicePixelRatio || 1;
-
-    canvas.width =
-        width * dpr;
-
-    canvas.height =
-        height * dpr;
-
-
-    var ctx =
-        canvas.getContext("2d");
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    var history =
-        loadHistory();
-
-
-    var values = [];
-
-
-    for(
-        var i =
-            Math.max(
-                0,
-                history.length - RANGE
-            );
-        i < history.length;
-        i++
-    ){
-
-        var p =
-            history[i] &&
-            history[i].stocks
-                ? history[i].stocks[ticker]
-                : null;
-
-        if(
-            typeof p === "number" &&
-            isFinite(p)
-        ){
-
-            values.push(p);
-        }
-    }
-
-
-    /*
-     * 没有足够数据
-     */
-
-    if(values.length < 2){
-
-        ctx.fillStyle =
-            "#5e6b7d";
-
-        ctx.font =
-            "11px sans-serif";
-
-        ctx.fillText(
-            "正在积累走势数据……",
-            5,
-            35
-        );
-
-        return;
-    }
-
-
-    var min =
-        Math.min.apply(
-            Math,
-            values
-        );
-
-    var max =
-        Math.max.apply(
-            Math,
-            values
-        );
-
-
-    /*
-     * 如果价格完全一样
-     */
-
-    if(max === min){
-
-        max += 1;
-        min -= 1;
-    }
-
-
-    var paddingTop = 8;
-    var paddingBottom = 8;
-    var chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-
-
-    /*
-     * 背景网格
-     */
-
-    ctx.strokeStyle =
-        "#171d25";
-
-    ctx.lineWidth = 1;
-
-
-    for(
-        var g=1;
-        g<=3;
-        g++
-    ){
-
-        var gy =
-            paddingTop +
-            chartHeight *
-            g / 4;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            0,
-            gy
-        );
-
-        ctx.lineTo(
-            width,
-            gy
-        );
-
-        ctx.stroke();
-    }
-
-
-    /*
-     * 判断涨跌
-     */
-
-    var first =
-        values[0];
-
-    var last =
-        values[
-            values.length - 1
-        ];
-
-    var lineColor =
-        last >= first
-        ? "#00d995"
-        : "#ff4767";
-
-
-    /*
-     * 走势线
-     */
-
-    ctx.beginPath();
-
-
-    for(
-        var j=0;
-        j<values.length;
-        j++
-    ){
-
-        var x =
-            j /
-            (values.length - 1) *
-            width;
-
-
-        var y =
-            paddingTop +
-            (
-                1 -
-                (
-                    values[j] - min
-                ) /
-                (max - min)
-            ) *
-            chartHeight;
-
-
-        if(j === 0){
-
-            ctx.moveTo(
-                x,
-                y
-            );
-
-        }else{
-
-            ctx.lineTo(
-                x,
-                y
-            );
-        }
-    }
-
-
-    ctx.strokeStyle =
-        lineColor;
-
-    ctx.lineWidth = 2;
-
-    ctx.stroke();
-
-
-    /*
-     * 最后一个点
-     */
-
-    var lastX = width;
-
-    var lastY =
-        paddingTop +
-        (
-            1 -
-            (
-                last - min
-            ) /
-            (max - min)
-        ) *
-        chartHeight;
-
-
-    ctx.beginPath();
-
-    ctx.arc(
-        lastX,
-        lastY,
-        3,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        lineColor;
-
-    ctx.fill();
-}
-
-
-/* =========================================================
-   更新所有走势图
-========================================================= */
-
-function drawAllCharts(){
-
-    drawLineChart(
-        "chartNVDA",
-        "NVDA"
-    );
-
-    drawLineChart(
-        "chartTSLA",
-        "TSLA"
-    );
-
-    drawLineChart(
-        "chartAAPL",
-        "AAPL"
-    );
-
-    drawLineChart(
-        "chartMSTR",
-        "MSTR"
-    );
-
-    drawLineChart(
-        "chartSTRC",
-        "STRC"
-    );
-
-
-    var history =
-        loadHistory();
-
-    $("chartInfo").textContent =
-        history.length +
-        " 次记录";
-}
-
-
-/* =========================================================
-   切换走势图范围
-========================================================= */
-
-function changeRange(
-    range,
-    button
-){
-
-    RANGE = range;
-
-    var buttons =
-        document.getElementsByClassName(
-            "chart-button"
-        );
-
-    for(
-        var i=0;
-        i<buttons.length;
-        i++
-    ){
-
-        buttons[i].className =
-            "chart-button";
-    }
-
-
-    button.className =
-        "chart-button active";
-
-
-    drawAllCharts();
-}
-
-
-/* =========================================================
-   股票显示
-========================================================= */
-
-function renderStocks(data){
-
-    var box =
-        $("stocks");
+    var map = {};
 
     if(
-        !data ||
-        !Array.isArray(data.stocks)
+        data.stocks &&
+        Array.isArray(data.stocks)
     ){
-        return;
+
+        data.stocks.forEach(function(item){
+
+            map[item.symbol] = item;
+
+        });
+
     }
 
 
-    var html = "";
+    var rows =
+        document.querySelectorAll(
+            ".stock-row"
+        );
 
 
-    STOCKS.forEach(function(symbol){
+    rows.forEach(function(row){
 
-        var stock = null;
-
-
-        for(
-            var i=0;
-            i<data.stocks.length;
-            i++
-        ){
-
-            if(
-                data.stocks[i] &&
-                data.stocks[i].symbol === symbol
-            ){
-
-                stock =
-                    data.stocks[i];
-
-                break;
-            }
-        }
-
-
-        if(!stock){
-
-            html +=
-                '<div class="stock-row">' +
-                    '<div class="stock-symbol">' +
-                        symbol +
-                    '</div>' +
-
-                    '<div class="stock-price">' +
-                        '--' +
-                    '</div>' +
-
-                    '<div class="stock-change gray">' +
-                        '--' +
-                    '</div>' +
-                '</div>';
-
-            return;
-        }
-
+        var symbol =
+            row.querySelector(
+                ".stock-symbol"
+            ).textContent.trim();
 
         var price =
-            Number(stock.price);
+            row.querySelector(
+                ".stock-price"
+            );
 
         var change =
-            Number(stock.change);
+            row.querySelector(
+                ".stock-change"
+            );
 
 
-        html +=
-            '<div class="stock-row">' +
-
-                '<div class="stock-symbol">' +
-                    symbol +
-                '</div>' +
-
-                '<div class="stock-price">' +
-                    formatMoney(price) +
-                '</div>' +
-
-                '<div class="stock-change ' +
-                    changeClass(change) +
-                '">' +
-                    formatChange(change) +
-                '</div>' +
-
-            '</div>';
-    });
-
-
-    box.innerHTML =
-        html;
-}
-
-
-/* =========================================================
-   指数
-========================================================= */
-
-function renderIndexes(data){
-
-    if(
-        !data ||
-        !Array.isArray(data.indexes)
-    ){
-
-        /*
-         * 如果你的 data.json 没有 indexes
-         * 就保持当前页面，不报错
-         */
-
-        return;
-    }
-
-
-    var cards =
-        document.querySelectorAll(
-            "#indexes .index-card"
-        );
-
-
-    for(
-        var i=0;
-        i<data.indexes.length &&
-        i<cards.length;
-        i++
-    ){
-
-        var item =
-            data.indexes[i];
+        var item = map[symbol];
 
         if(!item){
-            continue;
+            return;
         }
 
 
-        var price =
-            Number(item.price);
-
-        var change =
-            Number(item.change);
+        price.textContent =
+            "$" +
+            formatPrice(item.price);
 
 
-        var priceEl =
-            cards[i].querySelector(
-                ".index-price"
-            );
-
-        var changeEl =
-            cards[i].querySelector(
-                ".index-change"
-            );
+        change.textContent =
+            formatPercent(item.change);
 
 
-        if(priceEl){
+        change.className =
+            "stock-change " +
+            changeClass(item.change);
 
-            priceEl.textContent =
-                isFinite(price)
-                ? Number(price).toLocaleString(
-                    "en-US",
-                    {
-                        minimumFractionDigits:2,
-                        maximumFractionDigits:2
-                    }
-                )
-                : "--";
-        }
+    });
 
-
-        if(changeEl){
-
-            changeEl.textContent =
-                formatChange(change);
-
-            changeEl.className =
-                "index-change " +
-                changeClass(change);
-        }
-    }
 }
 
 
-/* =========================================================
-   加密货币
-========================================================= */
+/* ==================================================
+   更新指数
+================================================== */
 
-function renderCrypto(data){
+function updateIndices(data){
 
     if(
-        !data ||
+        data.indices &&
+        data.indices.nasdaq
+    ){
+
+        var n =
+            data.indices.nasdaq;
+
+        document.getElementById(
+            "nasdaq"
+        ).innerHTML =
+            formatPrice(n.price) +
+            " " +
+            '<span class="' +
+            changeClass(n.change) +
+            '">' +
+            formatPercent(n.change) +
+            "</span>";
+
+    }
+
+
+    if(
+        data.indices &&
+        data.indices.sp500
+    ){
+
+        var s =
+            data.indices.sp500;
+
+        document.getElementById(
+            "sp500"
+        ).innerHTML =
+            formatPrice(s.price) +
+            " " +
+            '<span class="' +
+            changeClass(s.change) +
+            '">' +
+            formatPercent(s.change) +
+            "</span>";
+
+    }
+
+}
+
+
+/* ==================================================
+   更新加密货币
+================================================== */
+
+function updateCrypto(data){
+
+    if(
+        !data.crypto ||
         !Array.isArray(data.crypto)
     ){
-
         return;
     }
 
 
+    var map = {};
+
+
+    data.crypto.forEach(function(item){
+
+        map[item.symbol] = item;
+
+    });
+
+
     var cards =
         document.querySelectorAll(
-            "#crypto .crypto-card"
+            ".crypto-card"
         );
 
 
-    for(
-        var i=0;
-        i<data.crypto.length &&
-        i<cards.length;
-        i++
-    ){
+    cards.forEach(function(card){
+
+        var symbol =
+            card.querySelector(
+                ".crypto-symbol"
+            ).textContent.trim();
+
 
         var item =
-            data.crypto[i];
+            map[symbol];
+
 
         if(!item){
-            continue;
+            return;
         }
 
 
         var price =
-            Number(item.price);
-
-        var change =
-            Number(item.change);
-
-
-        var priceEl =
-            cards[i].querySelector(
+            card.querySelector(
                 ".crypto-price"
             );
 
-        var changeEl =
-            cards[i].querySelector(
+        var change =
+            card.querySelector(
                 ".crypto-change"
             );
 
 
-        if(priceEl){
-
-            priceEl.textContent =
-                formatMoney(price);
-        }
+        price.textContent =
+            "$" +
+            formatPrice(item.price);
 
 
-        if(changeEl){
+        change.textContent =
+            formatPercent(item.change);
 
-            changeEl.textContent =
-                formatChange(change);
 
-            changeEl.className =
-                "crypto-change " +
-                changeClass(change);
-        }
-    }
+        change.className =
+            "crypto-change " +
+            changeClass(item.change);
+
+    });
+
 }
 
 
-/* =========================================================
+/* ==================================================
+   SVG 走势图
+================================================== */
+
+function makeChart(symbol, history){
+
+    var values = [];
+
+
+    history.forEach(function(record){
+
+        if(
+            !record.stocks ||
+            !Array.isArray(record.stocks)
+        ){
+            return;
+        }
+
+
+        record.stocks.forEach(function(item){
+
+            if(
+                item.symbol === symbol &&
+                item.price !== undefined
+            ){
+
+                values.push(
+                    Number(item.price)
+                );
+
+            }
+
+        });
+
+    });
+
+
+    var box =
+        document.createElement("div");
+
+    box.className =
+        "chart-item";
+
+
+    var title =
+        document.createElement("div");
+
+    title.className =
+        "chart-symbol";
+
+    title.textContent =
+        symbol;
+
+
+    box.appendChild(title);
+
+
+    if(values.length < 2){
+
+        var empty =
+            document.createElement("div");
+
+        empty.style.color =
+            "#596573";
+
+        empty.style.fontSize =
+            "11px";
+
+        empty.textContent =
+            "正在积累走势数据……";
+
+        box.appendChild(empty);
+
+        return box;
+
+    }
+
+
+    var width = 1000;
+    var height = 120;
+    var padding = 8;
+
+
+    var min =
+        Math.min.apply(null,values);
+
+    var max =
+        Math.max.apply(null,values);
+
+
+    if(max === min){
+
+        max = min + 1;
+
+    }
+
+
+    var points = [];
+
+
+    values.forEach(function(value,index){
+
+        var x =
+            padding +
+            (
+                index /
+                (values.length - 1)
+            ) *
+            (width - padding * 2);
+
+
+        var y =
+            height -
+            padding -
+            (
+                (value - min) /
+                (max - min)
+            ) *
+            (height - padding * 2);
+
+
+        points.push(
+            x.toFixed(2) +
+            "," +
+            y.toFixed(2)
+        );
+
+    });
+
+
+    var svg =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+        );
+
+    svg.setAttribute(
+        "viewBox",
+        "0 0 1000 120"
+    );
+
+    svg.setAttribute(
+        "preserveAspectRatio",
+        "none"
+    );
+
+    svg.setAttribute(
+        "class",
+        "chart-svg"
+    );
+
+
+    /* 网格线 */
+
+    for(
+        var i=1;
+        i<4;
+        i++
+    ){
+
+        var line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+        line.setAttribute(
+            "x1","0"
+        );
+
+        line.setAttribute(
+            "x2","1000"
+        );
+
+        line.setAttribute(
+            "y1",
+            i * 30
+        );
+
+        line.setAttribute(
+            "y2",
+            i * 30
+        );
+
+        line.setAttribute(
+            "stroke",
+            "#1b2027"
+        );
+
+        line.setAttribute(
+            "stroke-width",
+            "1"
+        );
+
+        svg.appendChild(line);
+
+    }
+
+
+    /* 走势 */
+
+    var polyline =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polyline"
+        );
+
+    polyline.setAttribute(
+        "points",
+        points.join(" ")
+    );
+
+    polyline.setAttribute(
+        "fill",
+        "none"
+    );
+
+    polyline.setAttribute(
+        "stroke",
+        "#19d889"
+    );
+
+    polyline.setAttribute(
+        "stroke-width",
+        "2.5"
+    );
+
+    svg.appendChild(polyline);
+
+
+    box.appendChild(svg);
+
+
+    return box;
+
+}
+
+
+/* ==================================================
+   更新走势图
+================================================== */
+
+var currentHistoryCount = 20;
+
+
+function updateCharts(data){
+
+    var container =
+        document.getElementById(
+            "charts"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if(
+        !data.history ||
+        !Array.isArray(data.history)
+    ){
+
+        document.getElementById(
+            "historyCount"
+        ).textContent =
+            "0 次记录";
+
+        return;
+
+    }
+
+
+    var history =
+        data.history.slice(
+            -currentHistoryCount
+        );
+
+
+    document.getElementById(
+        "historyCount"
+    ).textContent =
+        history.length +
+        " 次记录";
+
+
+    var symbols = [
+        "NVDA",
+        "TSLA",
+        "AAPL",
+        "MSTR",
+        "STRC"
+    ];
+
+
+    symbols.forEach(function(symbol){
+
+        container.appendChild(
+            makeChart(
+                symbol,
+                history
+            )
+        );
+
+    });
+
+}
+
+
+/* ==================================================
    获取 data.json
-========================================================= */
+================================================== */
 
 function loadData(){
 
     var url =
         DATA_URL +
         "?t=" +
-        Date.now();
+        new Date().getTime();
 
 
-    var xhr =
-        new XMLHttpRequest();
-
-
-    xhr.open(
-        "GET",
+    fetch(
         url,
-        true
-    );
+        {
+            cache:"no-store"
+        }
+    )
+
+    .then(function(response){
+
+        if(!response.ok){
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(function(data){
+
+        if(!data || !data.success){
+
+            throw new Error(
+                "data.json 数据无效"
+            );
+
+        }
 
 
-    xhr.onreadystatechange =
-        function(){
+        updateStocks(data);
 
-            if(
-                xhr.readyState !== 4
-            ){
+        updateIndices(data);
 
-                return;
-            }
+        updateCrypto(data);
+
+        updateCharts(data);
 
 
-            if(
-                xhr.status >= 200 &&
-                xhr.status < 300
-            ){
+        if(data.updatedAt){
 
-                try{
-
-                    var data =
-                        JSON.parse(
-                            xhr.responseText
-                        );
+            var time =
+                new Date(
+                    data.updatedAt
+                );
 
 
-                    renderStocks(data);
-
-                    renderIndexes(data);
-
-                    renderCrypto(data);
-
-
-                    /*
-                     * 保存行情历史
-                     */
-
-                    recordHistory(data);
-
-
-                    /*
-                     * 更新走势
-                     */
-
-                    drawAllCharts();
-
-
-                    /*
-                     * 状态
-                     */
-
-                    if(
-                        data.marketStatus
-                    ){
-
-                        $("marketStatus")
-                            .textContent =
-                            data.marketStatus;
+            document.getElementById(
+                "updated"
+            ).textContent =
+                time.toLocaleTimeString(
+                    "zh-CN",
+                    {
+                        hour12:false
                     }
+                );
+
+        }
 
 
-                    if(
-                        data.updatedAt
-                    ){
+        if(data.marketStatus){
 
-                        var d =
-                            new Date(
-                                data.updatedAt
-                            );
+            document.getElementById(
+                "marketStatus"
+            ).textContent =
+                data.marketStatus;
 
+        }
+        else{
 
-                        $("lastUpdate")
-                            .textContent =
-                            "最后更新：" +
-                            d.toLocaleTimeString(
-                                "zh-CN",
-                                {
-                                    hour:"2-digit",
-                                    minute:"2-digit",
-                                    second:"2-digit"
-                                }
-                            );
-                    }
+            document.getElementById(
+                "marketStatus"
+            ).textContent =
+                "行情正常";
 
+        }
 
-                }catch(e){
+    })
 
-                    console.log(
-                        "data.json 解析失败",
-                        e
-                    );
+    .catch(function(error){
 
-                    $("marketStatus")
-                        .textContent =
-                        "行情数据格式错误";
-                }
+        console.log(
+            "行情获取失败:",
+            error
+        );
 
+        document.getElementById(
+            "marketStatus"
+        ).textContent =
+            "行情暂时无法获取";
 
-            }else{
+    });
 
-                $("marketStatus")
-                    .textContent =
-                    "行情暂时无法获取";
-            }
-        };
-
-
-    xhr.onerror =
-        function(){
-
-            $("marketStatus")
-                .textContent =
-                "网络连接失败";
-        };
-
-
-    xhr.send(null);
 }
 
 
-/* =========================================================
-   启动
-========================================================= */
+/* ==================================================
+   走势按钮
+================================================== */
+
+var buttons =
+    document.querySelectorAll(
+        ".chart-button"
+    );
+
+
+buttons.forEach(function(button){
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            buttons.forEach(
+                function(b){
+                    b.className =
+                        "chart-button";
+                }
+            );
+
+
+            button.className =
+                "chart-button active";
+
+
+            currentHistoryCount =
+                Number(
+                    button.getAttribute(
+                        "data-count"
+                    )
+                );
+
+
+            loadData();
+
+        }
+    );
+
+});
+
+
+/* ==================================================
+   首次加载
+================================================== */
 
 loadData();
 
 
-/*
- * 每60秒读取一次 data.json
- */
+/* ==================================================
+   每 30 秒刷新
+================================================== */
 
 setInterval(
     loadData,
-    60000
+    30000
 );
-
-
-/*
- * 屏幕尺寸改变
- */
-
-window.onresize =
-    function(){
-
-        drawAllCharts();
-    };
-
 
 </script>
 
