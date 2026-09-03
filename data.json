@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updatedAt": "2026-09-03T20:00:39.919Z",
+  "updatedAt": "2026-09-03T20:17:08.038Z",
   "marketStatus": "美股休市",
   "stocks": [
     {
@@ -49,8 +49,8 @@
     },
     "sp500": {
       "symbol": "^GSPC",
-      "price": 7747.59,
-      "change": 1.0564004904390445,
+      "price": 7747.71,
+      "change": 1.0579657214410516,
       "previousClose": 7666.6,
       "marketState": ""
     }
@@ -58,88 +58,26 @@
   "crypto": [
     {
       "symbol": "BTC",
-      "price": 81561.5,
-      "change": 5.490692130896068
+      "price": 81470,
+      "change": 5.427708839906986
     },
     {
       "symbol": "ETH",
-      "price": 2510.92,
-      "change": 4.985616804923746
+      "price": 2511.88,
+      "change": 5.123773253259131
     },
     {
       "symbol": "BNB",
-      "price": 723.8,
-      "change": 5.3873034362259755
+      "price": 723.1,
+      "change": 5.285381479324414
     },
     {
       "symbol": "OKB",
-      "price": 109.9,
-      "change": 3.983347525782958
+      "price": 109.76,
+      "change": 3.909874088800539
     }
   ],
   "history": [
-    {
-      "timestamp": "2026-09-02T13:40:27.914Z",
-      "stocks": [
-        {
-          "symbol": "NVDA",
-          "price": 219.985,
-          "change": 1.1704378219278955
-        },
-        {
-          "symbol": "TSLA",
-          "price": 351.782,
-          "change": -1.2098065095902701
-        },
-        {
-          "symbol": "AAPL",
-          "price": 324.475,
-          "change": -0.20145787838709833
-        },
-        {
-          "symbol": "MSTR",
-          "price": 122.34,
-          "change": -2.033952594490705
-        },
-        {
-          "symbol": "STRC",
-          "price": 96.871,
-          "change": 0.07334710743801441
-        }
-      ],
-      "indices": {
-        "nasdaq": {
-          "price": 26098.97,
-          "change": -0.0030766551111378764
-        },
-        "sp500": {
-          "price": 7641.19,
-          "change": 0.1273673355198847
-        }
-      },
-      "crypto": [
-        {
-          "symbol": "BTC",
-          "price": 76724,
-          "change": -1.1372744070736325
-        },
-        {
-          "symbol": "ETH",
-          "price": 2382.9,
-          "change": -2.1396303901437332
-        },
-        {
-          "symbol": "BNB",
-          "price": 684.4,
-          "change": 0
-        },
-        {
-          "symbol": "OKB",
-          "price": 106.02,
-          "change": -4.244942196531794
-        }
-      ]
-    },
     {
       "timestamp": "2026-09-02T13:52:39.513Z",
       "stocks": [
@@ -7515,6 +7453,68 @@
           "symbol": "OKB",
           "price": 109.9,
           "change": 3.983347525782958
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-03T20:17:08.038Z",
+      "stocks": [
+        {
+          "symbol": "NVDA",
+          "price": 228.45,
+          "change": 1.8002762800231684
+        },
+        {
+          "symbol": "TSLA",
+          "price": 376.365,
+          "change": 5.421416767037343
+        },
+        {
+          "symbol": "AAPL",
+          "price": 328.21,
+          "change": 1.0001230920728705
+        },
+        {
+          "symbol": "MSTR",
+          "price": 144.82,
+          "change": 17.558243363909405
+        },
+        {
+          "symbol": "STRC",
+          "price": 97.82,
+          "change": 0.7726383022561039
+        }
+      ],
+      "indices": {
+        "nasdaq": {
+          "price": 26584.06,
+          "change": 1.3968815418271872
+        },
+        "sp500": {
+          "price": 7747.71,
+          "change": 1.0579657214410516
+        }
+      },
+      "crypto": [
+        {
+          "symbol": "BTC",
+          "price": 81470,
+          "change": 5.427708839906986
+        },
+        {
+          "symbol": "ETH",
+          "price": 2511.88,
+          "change": 5.123773253259131
+        },
+        {
+          "symbol": "BNB",
+          "price": 723.1,
+          "change": 5.285381479324414
+        },
+        {
+          "symbol": "OKB",
+          "price": 109.76,
+          "change": 3.909874088800539
         }
       ]
     }
