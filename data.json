@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updatedAt": "2026-09-28T01:31:38.895Z",
+  "updatedAt": "2026-09-28T07:31:31.001Z",
   "marketStatus": "美股休市",
   "stocks": [
     {
@@ -58,88 +58,26 @@
   "crypto": [
     {
       "symbol": "BTC",
-      "price": 84089.3,
-      "change": -0.29015580904498434
+      "price": 82990.5,
+      "change": -1.819156210590072
     },
     {
       "symbol": "ETH",
-      "price": 2674.59,
-      "change": -0.6791984789519014
+      "price": 2644.98,
+      "change": -2.3455700735828997
     },
     {
       "symbol": "BNB",
-      "price": 779.1,
-      "change": 0.8413150401242557
+      "price": 761.5,
+      "change": -1.9696189495365546
     },
     {
       "symbol": "OKB",
-      "price": 120.69,
-      "change": -0.11586526524869699
+      "price": 116.55,
+      "change": -4.145077720207259
     }
   ],
   "history": [
-    {
-      "timestamp": "2026-09-20T23:58:46.522Z",
-      "stocks": [
-        {
-          "symbol": "NVDA",
-          "price": 222.27,
-          "change": 1.3358256587945685
-        },
-        {
-          "symbol": "TSLA",
-          "price": 364.27,
-          "change": -0.5270344074276371
-        },
-        {
-          "symbol": "AAPL",
-          "price": 336.13,
-          "change": -0.2581602373887254
-        },
-        {
-          "symbol": "MSTR",
-          "price": 153.92,
-          "change": 16.38563327032135
-        },
-        {
-          "symbol": "STRC",
-          "price": 98.51,
-          "change": 0.38724141445022897
-        }
-      ],
-      "indices": {
-        "nasdaq": {
-          "price": 26522.545,
-          "change": 0.39459389892611935
-        },
-        "sp500": {
-          "price": 7650.5,
-          "change": 0.16680283224400586
-        }
-      },
-      "crypto": [
-        {
-          "symbol": "BTC",
-          "price": 81158.9,
-          "change": -0.13461583421827297
-        },
-        {
-          "symbol": "ETH",
-          "price": 2643.02,
-          "change": 0.3794107928887928
-        },
-        {
-          "symbol": "BNB",
-          "price": 772.4,
-          "change": 1.338231435318805
-        },
-        {
-          "symbol": "OKB",
-          "price": 117.88,
-          "change": 0
-        }
-      ]
-    },
     {
       "timestamp": "2026-09-21T00:22:58.483Z",
       "stocks": [
@@ -7515,6 +7453,68 @@
           "symbol": "OKB",
           "price": 120.69,
           "change": -0.11586526524869699
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-28T07:31:31.001Z",
+      "stocks": [
+        {
+          "symbol": "NVDA",
+          "price": 225.07,
+          "change": 0.21818505654999584
+        },
+        {
+          "symbol": "TSLA",
+          "price": 372.11,
+          "change": -1.5425728951685411
+        },
+        {
+          "symbol": "AAPL",
+          "price": 341.07,
+          "change": 1.5331031197904195
+        },
+        {
+          "symbol": "MSTR",
+          "price": 158.61,
+          "change": -1.856320772229441
+        },
+        {
+          "symbol": "STRC",
+          "price": 98.54,
+          "change": 0.2339538195504058
+        }
+      ],
+      "indices": {
+        "nasdaq": {
+          "price": 27068.717,
+          "change": 0.48002925083706055
+        },
+        "sp500": {
+          "price": 7743.41,
+          "change": 0.5098564016962298
+        }
+      },
+      "crypto": [
+        {
+          "symbol": "BTC",
+          "price": 82990.5,
+          "change": -1.819156210590072
+        },
+        {
+          "symbol": "ETH",
+          "price": 2644.98,
+          "change": -2.3455700735828997
+        },
+        {
+          "symbol": "BNB",
+          "price": 761.5,
+          "change": -1.9696189495365546
+        },
+        {
+          "symbol": "OKB",
+          "price": 116.55,
+          "change": -4.145077720207259
         }
       ]
     }
